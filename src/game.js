@@ -10,6 +10,18 @@ function loadModel(json)
   return model;
 }
 
+function isGenerator(object)
+{
+  do {
+    if (object.thing instanceof Generator)
+      return true;
+
+    object = object.parent;
+  } while(object.parent);
+
+  return false;
+}
+
 const TILE_SIZE = 0.2;
 
 class Game
@@ -47,13 +59,12 @@ class Game
       const model = loadModel(this.app.data.windturbine);
       model.scale.set(TILE_SIZE*0.5, TILE_SIZE*0.5,TILE_SIZE*0.5);
 
-      model.position.set(
-        pos[0] * (this.terrainSize[0] / this.tiles[0]) - this.terrainSize[0] / 2,
-        0,
-        pos[1] * (this.terrainSize[1] / this.tiles[1]) - this.terrainSize[1] / 2);
+      const modelPos = this.gridToWorld(pos[0], pos[1]);
+      model.position.set(modelPos[0], 0, modelPos[1]);
       this.scene.add(model);
 
       thing.model = model;
+      model.thing = thing;
     }
 
     const ambientLight = new THREE.AmbientLight(0x404040);
@@ -68,9 +79,7 @@ class Game
   render(dt)
   {
     for (let pair of this.level.things)
-    {
       pair[0].render(dt);
-    }
   }
 
   pointermove(event)
@@ -80,15 +89,45 @@ class Game
       x: (event.x / this.app.renderer.domElement.clientWidth) * 2 - 1,
       y: (event.y / this.app.renderer.domElement.clientHeight) * 2 - 1
     };
-
     this.raycaster.setFromCamera(cursor, this.camera);
     const intersections = this.raycaster.intersectObjects(this.scene.children, true);
 
-    const hit = intersections.find(i => i.object === this.terrain);
-    if (hit)
+    for (let inter of intersections)
     {
-      hit.point.x = Math.floor((hit.point.x + this.terrainSize[0] / 2) / this.terrainSize[0] * this.tiles[0]);
-      hit.point.z = Math.floor((hit.point.z + this.terrainSize[1] / 2) / this.terrainSize[1] * this.tiles[1]);
+      // Inventory item
+      if (false)
+      {
+        console.log('inventory');
+        return;
+      }
+      // Built generator
+      else if (isGenerator(inter.object))
+      {
+        console.log('generator');
+        return;
+      }
+      // Empty tile
+      else if (inter.object === this.terrain)
+      {
+        console.log('empty tile', this.worldToGrid(inter.point.x, inter.point.z));
+        return;
+      }
     }
+  }
+
+  gridToWorld(x, y)
+  {
+    return [
+      x * TILE_SIZE - this.terrainSize[0] / 2,
+      y * TILE_SIZE - this.terrainSize[1] / 2
+    ];
+  }
+
+  worldToGrid(x, y)
+  {
+    return [
+      Math.floor((x + this.terrainSize[0] / 2) / this.terrainSize[0] * this.tiles[0]),
+      Math.floor((y + this.terrainSize[1] / 2) / this.terrainSize[1] * this.tiles[1])
+    ];
   }
 }
