@@ -29,6 +29,14 @@ STATES.Main = {
   }
 };
 
+const MODELS = [
+  'windturbine.json',
+  'solarpanel.json',
+  'battery.json',
+  'rock.json',
+  'house.json'
+];
+
 // Skip the loading screen.  It always lasts at least 500ms, even without
 // assets.
 delete PLAYGROUND.LoadingScreen
@@ -54,7 +62,7 @@ window.addEventListener('DOMContentLoaded', function main() {
     },
 
     create() {
-      this.loadData('windturbine.json');
+      MODELS.forEach(asset => this.loadData(asset));
     },
 
     ready() {
