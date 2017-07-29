@@ -6,6 +6,12 @@ class Thing {
     this.name = name;
   }
 
+  render(dt) {
+    console.log(this.model.getObjectByName('motor').rotation);
+    this.model.getObjectByName('motor').rotation.y += dt * 0.5;
+    console.log(this.model.getObjectByName('motor').rotation);
+  }
+
 }
 
 Thing.ID = 0;
@@ -50,6 +56,8 @@ class WindTurbine extends Generator {
     this.rotation = WindTurbine.Rotation.HORIZONTAL;
   }
 
+  render(dt) {
+  }
 }
 
 WindTurbine.Rotation = {

@@ -2,14 +2,11 @@ let STATES = {};
 
 STATES.Main = {
   enter() {
-    this.game = new Game(this.app);
+    this.game = new Game(this.app, 1);
   },
 
-  step(dt) {
-    this.game.step(dt);
-  },
-
-  render() {
+  render(dt) {
+    this.game.render(dt);
     this.app.renderer.render(this.game.scene, this.game.camera);
   },
 
