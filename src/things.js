@@ -37,6 +37,11 @@ class Generator extends Thing {
 
   constructor(name) {
     super(name);
+    this.rotation = Generator.Rotation.TOP;
+  }
+
+  rotate() {
+    this.rotation = (this.rotation + 1) % 4;
   }
 
 }
@@ -47,37 +52,34 @@ Generator.Type = {
   Battery: 2,
 }
 
+Generator.Rotation = {
+  TOP: 0,
+  RIGHT: 1,
+  BOTTOM: 2,
+  LEFT: 3,
+};
+
 class WindTurbine extends Generator {
 
   constructor() {
     super(`windturbine-${Thing.ID++}`);
-    this.rotation = WindTurbine.Rotation.HORIZONTAL;
+  }
   }
 
   render(dt) {
   }
 }
 
-WindTurbine.Rotation = {
-  HORIZONTAL: 0,
-  VERTICAL: 1,
-};
 
 class SolarPanel extends Generator {
 
   constructor() {
     super(`solarpanel-${Thing.ID++}`);
-    this.rotation = SolarPanel.Rotation.TOP;
   }
 
 }
 
-SolarPanel.Rotation = {
-  TOP: 0,
-  RIGHT: 1,
-  BOTTOM: 2,
-  LEFT: 3,
-};
+    // TODO: night
 
 class Battery extends Generator {
 
