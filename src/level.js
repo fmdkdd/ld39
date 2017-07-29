@@ -60,7 +60,6 @@ class Level {
 
           // consumer
         case '1': case '2': case '3': case '4':
-        case '5': case '6': case '7': case '8': case '9':
           let size = parseInt(col, 10);
           this.putThingAt(new Consumer(size), x,y);
           break;
