@@ -2,17 +2,31 @@ let STATES = {};
 
 STATES.Main = {
   enter() {
-    // Initialize THREE.Scene and game logic
+    this.game = new Game(this.app);
   },
 
   step(dt) {
-    // Game logic update before render()
+    this.game.step(dt);
   },
 
   render() {
-    // Render scene, usually
+    this.app.renderer.render(this.game.scene, this.game.camera);
   },
 
+  pointermove(event) {
+
+    // Forward mouse position relative to the canvas
+    const pointer = {
+      x: event.original.clientX - this.app.renderer.domElement.offsetLeft,
+      y: event.original.clientY - this.app.renderer.domElement.offsetTop
+    };
+
+    this.game.pointermove(pointer);
+  },
+
+  pointerup(event) {
+    //this.game.pointerup(event);
+  }
 };
 
 // Skip the loading screen.  It always lasts at least 500ms, even without
@@ -25,7 +39,7 @@ window.addEventListener('DOMContentLoaded', function main() {
     width: 320,
     height: 180,
     // scaled to screen dimensions
-    scale: 3,
+    scale: 2,
 
     smoothing: false,
 
@@ -39,6 +53,10 @@ window.addEventListener('DOMContentLoaded', function main() {
       document.body.appendChild(this.stats.dom);
     },
 
+    create() {
+      this.loadData('windturbine.json');
+    },
+
     ready() {
       if (Detector.webgl) {
 
@@ -47,7 +65,7 @@ window.addEventListener('DOMContentLoaded', function main() {
           antialias: this.smoothing,
           alpha: true,
         });
-        this.renderer.setClearColor(0x272822);
+        this.renderer.setClearColor(0x6dc2ca);
         this.renderer.setSize(this.width, this.height, false);
         this.renderer.domElement.style.width = this.width * this.scale + 'px';
         this.renderer.domElement.style.height = this.height * this.scale + 'px';
