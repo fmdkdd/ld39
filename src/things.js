@@ -8,11 +8,13 @@ class Thing {
 
 }
 
+Thing.ID = 0;
+
 class Consumer extends Thing {
 
   // size: how much power it consumes
-  constructor(name, size) {
-    super(name);
+  constructor(size) {
+    super(`consumer-${Thing.ID++}`);
     if (size <= 0) throw new Error('size must be > 0');
     this.size = size;
   }
@@ -21,8 +23,8 @@ class Consumer extends Thing {
 
 class Obstacle extends Thing {
 
-  constructor(name) {
-    super(name);
+  constructor() {
+    super(`obstacle-${Thing.ID++}`);
   }
 
 }
@@ -31,6 +33,19 @@ class Generator extends Thing {
 
   constructor(name) {
     super(name);
+  }
+
+  static buildFromType(type) {
+    switch (type) {
+    case Generator.Type.WindTurbine:
+      return new WindTurbine();
+    case Generator.Type.SolarPanel:
+      return new SolarPanel();
+    case Generator.Type.Battery:
+      return new Battery();
+    default:
+      throw new Error(`Unknown item type: '${type}'`);
+    }
   }
 
 }
@@ -43,8 +58,8 @@ Generator.Type = {
 
 class WindTurbine extends Generator {
 
-  constructor(name) {
-    super(name);
+  constructor() {
+    super(`windturbine-${Thing.ID++}`);
     this.rotation = WindTurbine.Rotation.HORIZONTAL;
   }
 
@@ -57,8 +72,8 @@ WindTurbine.Rotation = {
 
 class SolarPanel extends Generator {
 
-  constructor(name) {
-    super(name);
+  constructor() {
+    super(`solarpanel-${Thing.ID++}`);
     this.rotation = SolarPanel.Rotation.TOP;
   }
 
@@ -73,8 +88,8 @@ SolarPanel.Rotation = {
 
 class Battery extends Generator {
 
-  constructor(name) {
-    super(name);
+  constructor() {
+    super(`battery-${Thing.ID++}`);
   }
 
 }

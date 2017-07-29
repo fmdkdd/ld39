@@ -40,7 +40,6 @@ class Level {
     // Map from things to their position in the grid
     this.things = new Map();
 
-    let id = 0;
     for (let y=0; y < lines.length; ++y) {
       let row = lines[y];
       for (let x=0; x < row.length; ++x) {
@@ -52,16 +51,14 @@ class Level {
 
           // obstacle
         case '#':
-          this.putThingAt(new Obstacle(`obstacle-${id}`), x,y);
-          id++;
+          this.putThingAt(new Obstacle(), x,y);
           break;
 
           // consumer
         case '1': case '2': case '3': case '4':
         case '5': case '6': case '7': case '8': case '9':
           let size = parseInt(col, 10);
-          this.putThingAt(new Consumer(`consumer-${id}`, size), x,y);
-          id++;
+          this.putThingAt(new Consumer(), x,y);
           break;
 
         default:
@@ -79,8 +76,7 @@ class Level {
 
     // If the thing we want to add was already in this level, remove it
     if (this.things.has(thing)) {
-      let [x,y] = this.things.get(thing);
-      this.grid.putAt(null, x,y);
+      this.removeThing(thing);
     }
 
     this.grid.putAt(thing, x,y);
@@ -103,6 +99,19 @@ class Level {
   // Return whether this grid has a cell with this thing
   hasThing(thing) {
     return this.things.has(thing);
+  }
+
+  // Replace the thing in the level by the replacement thing
+  replaceThing(thing, replacement) {
+    let [x,y] = this.getThingXY(thing);
+    this.removeThing(thing);
+    this.putThingAt(replacement, x,y);
+  }
+
+  removeThing(thing) {
+    if (!this.hasThing(thing)) throw new Error('Thing ${thing.name} not in level');
+    let [x,y] = this.things.get(thing);
+    this.grid.putAt(null, x,y);
   }
 
 }
