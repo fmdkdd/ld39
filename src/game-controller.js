@@ -14,7 +14,7 @@ class GameController {
   }
 
   // Put held item back in inventory.  Do nothing if we have no held item.
-  releaseHeldItem() {
+  releaseHeldThing() {
     if (this.heldThing) {
       this.level.markAvailable(this.heldThing);
       this.heldThing = null;
@@ -22,7 +22,7 @@ class GameController {
   }
 
   // Put the held item at (x,y) in the level.  Do nothing if we have no held item.
-  putHeldItemAt(x,y) {
+  putHeldThingAt(x,y) {
     if (this.heldThing) {
       this.level.putThingAt(this.heldThing, x,y);
       this.heldThing = null;

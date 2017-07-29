@@ -97,7 +97,7 @@ class Level {
 
   // Return coordinates (x,y) of Thing in level, or throw if it's not in the level
   getThingXY(thing) {
-    if (!this.hasThing(thing)) throw new Error('Thing ${thing.name} not in level');
+    if (!this.hasThing(thing)) throw new Error(`Thing ${thing.name} not in level`);
     let [x,y] = this.things.get(thing);
     return [x,y];
   }
@@ -108,14 +108,14 @@ class Level {
   }
 
   // Replace the thing in the level by the replacement thing
-  replaceThing(thing, replacement) {
+  replaceThingBy(thing, replacement) {
     let [x,y] = this.getThingXY(thing);
     this.removeThing(thing);
     this.putThingAt(replacement, x,y);
   }
 
   removeThing(thing) {
-    if (!this.hasThing(thing)) throw new Error('Thing ${thing.name} not in level');
+    if (!this.hasThing(thing)) throw new Error(`Thing ${thing.name} not in level`);
     let [x,y] = this.things.get(thing);
     this.grid.putAt(null, x,y);
   }
