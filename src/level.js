@@ -94,9 +94,7 @@ class Level {
   // Return coordinates (x,y) of Thing in level, or throw if it's not in the level
   getThingXY(thing) {
     if (!this.hasThing(thing)) throw new Error('Thing ${thing.name} not in level');
-    let pos = this.things.get(thing);
-    let y = Math.floor(pos / this.width);
-    let x = pos - y;
+    let [x,y] = this.things.get(thing);
     return [x,y];
   }
 
