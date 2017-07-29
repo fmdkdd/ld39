@@ -28,8 +28,7 @@ class Grid {
   // Put obj in cell (x,y)
   putAt(obj, x, y) {
     this.checkBounds(x, y);
-    let pos = y * this.width + x;
-    this.cells[pos] = obj;
+    this.cells[y * this.width + x] = obj;
   }
 
 }
