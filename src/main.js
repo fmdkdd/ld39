@@ -3,6 +3,8 @@ let STATES = {};
 STATES.Main = {
   enter() {
     this.game = new Game(this.app, 1);
+    this.gameController = new GameController(this.game.level);
+    this.pointer = {x:0, y:0};
   },
 
   render(dt) {
@@ -13,17 +15,27 @@ STATES.Main = {
   pointermove(event) {
 
     // Forward mouse position relative to the canvas
-    const pointer = {
-      x: event.original.clientX - this.app.renderer.domElement.offsetLeft,
-      y: event.original.clientY - this.app.renderer.domElement.offsetTop
-    };
+    this.pointer.x = event.original.clientX - this.app.renderer.domElement.offsetLeft;
+    this.pointer.y = event.original.clientY - this.app.renderer.domElement.offsetTop;
 
-    this.game.pointermove(pointer);
+    //this.game.pointermove(this.pointer);
   },
 
   pointerup(event) {
     //this.game.pointerup(event);
-  }
+  },
+
+  pointerdown(event) {
+    let coords = this.game.pickGridCell(this.pointer);
+    if (coords) {
+      let [x,y] = coords;
+      console.log(`Picking grid cell (${x},${y})`);
+
+      this.gameController.pickUpThingFromXY(x,y);
+      console.log('Thing held: ', this.gameController.heldThing);
+    }
+
+  },
 };
 
 const MODELS = [

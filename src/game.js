@@ -82,6 +82,28 @@ class Game
       pair[0].render(dt);
   }
 
+  // Pick and return the grid cell at point coordinates (in canvas space), or
+  // null
+  pickGridCell(point) {
+    // [canvas width, canvas height] -> [-1, 1]
+    const cursor = {
+      x: (point.x / this.app.renderer.domElement.clientWidth) * 2 - 1,
+      y: -((point.y / this.app.renderer.domElement.clientHeight) * 2 - 1)
+    };
+    this.raycaster.setFromCamera(cursor, this.camera);
+    const intersections = this.raycaster.intersectObjects(this.scene.children, true);
+
+    for (let inter of intersections)
+    {
+      if (inter.object === this.terrain)
+      {
+        return this.worldToGrid(inter.point.x, inter.point.z);
+      }
+    }
+
+    return null;
+  }
+
   pointermove(event)
   {
     // [canvas width, canvas height] -> [-1, 1]
@@ -97,19 +119,19 @@ class Game
       // Inventory item
       if (false)
       {
-        console.log('inventory');
+        //console.log('inventory');
         return;
       }
       // Built generator
       else if (isGenerator(inter.object))
       {
-        console.log('generator');
+        //console.log('generator');
         return;
       }
       // Empty tile
       else if (inter.object === this.terrain)
       {
-        console.log('empty tile', this.worldToGrid(inter.point.x, inter.point.z));
+        //console.log('empty tile', this.worldToGrid(inter.point.x, inter.point.z));
         return;
       }
     }

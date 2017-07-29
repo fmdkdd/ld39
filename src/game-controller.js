@@ -41,8 +41,23 @@ class GameController {
   }
 
   // Take generator at (x,y) in level and put it in the currently held slot
+  // Do nothing if there is nothing at (x,y).
   pickUpThingFromXY(x,y) {
-    this.pickUpThing(this.level.getThingAt(x,y));
+    let thing = this.level.getThingAt(x,y);
+
+    if (thing) {
+      this.pickUpThing(thing);
+    }
+  }
+
+  clickAtXY(x,y) {
+    let thing = this.level.getThingAt(x,y);
+
+    if (thing) {
+      this.pickUpThing(thing);
+    } else {
+      this.putHeldThingAt(x,y);
+    }
   }
 
 }
