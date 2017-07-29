@@ -35,19 +35,6 @@ class Generator extends Thing {
     super(name);
   }
 
-  static buildFromType(type) {
-    switch (type) {
-    case Generator.Type.WindTurbine:
-      return new WindTurbine();
-    case Generator.Type.SolarPanel:
-      return new SolarPanel();
-    case Generator.Type.Battery:
-      return new Battery();
-    default:
-      throw new Error(`Unknown item type: '${type}'`);
-    }
-  }
-
 }
 
 Generator.Type = {

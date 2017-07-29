@@ -7,6 +7,10 @@ class InventoryItem {
     this.available = true;
   }
 
+  instantiate() {
+    return new this.type();
+  }
+
 }
 
 // A playable level loaded from static data
@@ -18,9 +22,9 @@ class Level {
     if (!data.generators) throw new Error('Empty generators');
     this.inventory = Array.prototype.map.call(data.generators, (g => {
       switch (g) {
-      case 'W': return new InventoryItem(Generator.Type.WindTurbine);
-      case 'S': return new InventoryItem(Generator.Type.SolarPanel);
-      case 'B': return new InventoryItem(Generator.Type.Battery);
+      case 'W': return new InventoryItem(WindTurbine);
+      case 'S': return new InventoryItem(SolarPanel);
+      case 'B': return new InventoryItem(Battery);
       default:
         throw new Error(`Unrecognized generator symbol: '${g}'`);
       }
@@ -112,6 +116,18 @@ class Level {
     if (!this.hasThing(thing)) throw new Error('Thing ${thing.name} not in level');
     let [x,y] = this.things.get(thing);
     this.grid.putAt(null, x,y);
+  }
+
+  // Mark inventory item as unavailable
+  markUnavailable(item) {
+    item.available = false;
+  }
+
+  // Mark the first inventory item that matches thing's type as available
+  markAvailable(thing) {
+    let item = this.inventory.find(item => item.type == thing.constructor);
+    if (!item) throw new Error("Thing is not allowed in the level inventory");
+    item.available = true;
   }
 
 }
