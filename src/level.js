@@ -87,6 +87,11 @@ class Level {
     this.things.set(thing, [x,y]);
   }
 
+  // Whether [x,y] is in the level bounds
+  inBounds(x,y) {
+    return this.grid.inBounds(x,y);
+  }
+
   getThingAt(x,y) {
     return this.grid.getAt(x,y);
   }

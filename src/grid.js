@@ -10,8 +10,13 @@ class Grid {
 
   // Throw if coordinates are out of bounds
   checkBounds(x,y) {
-    if (x < 0 || x >= this.width) throw new Error(`x ${x} out of bounds [${0},${this.width}[`);
-    if (y < 0 || y >= this.height) throw new Error(`y ${y} out of bounds [${0},${this.height}[`);
+    if (!this.inBounds(x,y))
+      throw new Error(`(${x},${y}) out of bounds [${0},${this.width}[`);
+  }
+
+  // Whether (x,y) is in bounds of this grid
+  inBounds(x,y) {
+    return (x >= 0 && x < this.width && y >= 0 && y < this.height);
   }
 
   // Return content of cell (x,y)
