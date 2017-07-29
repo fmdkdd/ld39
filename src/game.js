@@ -87,7 +87,7 @@ class Game
     // [canvas width, canvas height] -> [-1, 1]
     const cursor = {
       x: (event.x / this.app.renderer.domElement.clientWidth) * 2 - 1,
-      y: (event.y / this.app.renderer.domElement.clientHeight) * 2 - 1
+      y: -((event.y / this.app.renderer.domElement.clientHeight) * 2 - 1)
     };
     this.raycaster.setFromCamera(cursor, this.camera);
     const intersections = this.raycaster.intersectObjects(this.scene.children, true);
