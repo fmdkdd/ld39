@@ -130,4 +130,42 @@ class Level {
     item.available = true;
   }
 
+  // Validate this level: try to distribute power from generators to consumers.
+  //
+  // Return a validation object describing the current state of the level:
+  // solved, or unsolved with a list of consumers that are unpowered or overloaded.
+  validate() {
+    // Create a power counter for each consumer, then go through each generator,
+    // apply power to its area, incrementing the counter if a consumer is found.
+    // In the end, we compare the power counter to the consumer size, and report
+    // any discrepancy.
+
+    let counters = new Map();
+    for (let th of this.things.keys()) {
+      if (th instanceof Consumer) {
+        counters.set(th, 0);
+      }
+    }
+
+    for (let th of this.things.keys()) {
+      if (th instanceof Generator) {
+        // Let the generator add to the power counters
+        th.distributePower(this, counters);
+      }
+    }
+
+    // Gather any mispowered (unpowered/overloaded) consumer, with the current
+    // value
+    let mispowered = [];
+    for (let [counter, power] of counters.entries()) {
+      if (counter.size !== power) {
+        mispowered.push({counter, current_power: power});
+      }
+    }
+    // If there are no mispowered consumers, the level is solved!
+    let solved = mispowered.length === 0;
+
+    return {solved, mispowered};
+  }
+
 }
