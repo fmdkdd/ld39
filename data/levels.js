@@ -1,4 +1,4 @@
-let LEVELS = [
+const LEVELS = [
   {
     generators: 'SS',
     map: `....1.2...`,
