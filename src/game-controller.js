@@ -146,6 +146,14 @@ class GameController {
       this.game.updateTileColor(this.hoveredTile, false);
       this.hoveredTile = null;
     }
+
+    // Hover effect for button under cursor
+    let button = this.game.pickButton();
+    if (this.game.pickButton()) {
+      this.game.nextLevelButton.material.color.setHex(0xffff00);
+    } else {
+      this.game.nextLevelButton.material.color.setHex(0xffffff);
+    }
   }
 
   leftclick() {
