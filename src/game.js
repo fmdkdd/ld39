@@ -193,6 +193,9 @@ class Game
     let width = this.app.renderer.domElement.clientWidth;
     if (night) {
       width /= 2;
+      if (point.x > width) {
+        point.x -= width;
+      }
     }
 
     this.pickingResult = {};
