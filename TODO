@@ -1,5 +1,4 @@
 @merwan:
-- fix models rotation (all models should face the same direction)
 - poweredCells feedback (zones)
 - solar panel model (texture?)
 - adjust models scale
@@ -8,6 +7,7 @@
 - outline feedback on consumers (same effect)
 
 @fmdkdd:
+- validate day and night separately (rules are different)
 - add more levels
 - sound effects
 - background music
@@ -20,6 +20,8 @@ unassigned:
 - random houses can overlap (depends on camera?)
 - visual feedback for POWERED battery (we forgot that!)
 - duplicate next level button in night levels (and too small, too high)
+- highlight is applied to particles (maybe removing the particles should fix it?)
+- particles stay between levels
 
 
 done:
@@ -27,3 +29,4 @@ done:
 - can go to next level
 - validation for night levels
 - battery distributePower
+- fix models rotation (all models should face the same direction)
