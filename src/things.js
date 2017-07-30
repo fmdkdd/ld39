@@ -7,7 +7,6 @@ class Thing {
   }
 
   render(dt) {
-    this.model.getObjectByName('motor').rotation.y += dt * 0.5;
   }
 
 }
@@ -140,6 +139,7 @@ class WindTurbine extends Generator {
   }
 
   render(dt) {
+    this.model.getObjectByName('motor').rotation.y += dt * 0.5;
   }
 }
 

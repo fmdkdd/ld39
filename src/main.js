@@ -19,20 +19,11 @@ STATES.Main = {
     this.pointer.x = event.original.clientX - this.app.renderer.domElement.offsetLeft;
     this.pointer.y = event.original.clientY - this.app.renderer.domElement.offsetTop;
 
-    // If the mouse is over a tile, highlight it
-    let tile = this.game.pickGridTile(this.pointer);
-    if (this.highlightedTile) {
-      this.highlightedTile.material.emissive = new THREE.Color(0);
-    }
-    this.highlightedTile = tile;
-    if (this.highlightedTile) {
-      this.highlightedTile.material.emissive = new THREE.Color(0xf0f);
-    }
-
+    this.game.pointermove(this.pointer);
   },
 
   pointerup(event) {
-    //this.game.pointerup(event);
+    this.game.pointerup(event);
   },
 
   pointerdown(event) {
@@ -92,6 +83,7 @@ window.addEventListener('DOMContentLoaded', function main() {
           alpha: true,
         });
         this.renderer.setClearColor(0x6dc2ca);
+        this.renderer.shadowMap.enabled = true;
         this.renderer.setSize(this.width, this.height, false);
         this.renderer.domElement.style.width = this.width * this.scale + 'px';
         this.renderer.domElement.style.height = this.height * this.scale + 'px';

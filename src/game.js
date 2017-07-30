@@ -4,8 +4,11 @@ function loadModel(json)
   const loader = new THREE.ObjectLoader();
   const model = loader.parse(json);
 
-  // Use vertex colors + Lambert shading
-  model.traverse(child => child.material = new THREE.MeshLambertMaterial({vertexColors: THREE.VertexColors}));
+  // Use vertex colors + Lambert shading + shadow
+  model.traverse(child => {
+    child.material = new THREE.MeshLambertMaterial({vertexColors: THREE.VertexColors});
+    child.castShadow = true;
+  });
 
   return model;
 }
@@ -26,7 +29,22 @@ function isGenerator(object)
   return false;
 }
 
+function isInInventory(object)
+{
+  do {
+    if (object.inventory)
+      return true;
+
+    object = object.parent;
+  } while(object.parent);
+
+  return false;
+}
+
 const TILE_SIZE = 0.2;
+const TILE_COLOR_1 = 0x6daa2c;
+const TILE_COLOR_2 = 0x79a92b;
+const TILE_COLOR_HOVER = 0x96a82a;
 
 const ModelTypes = {
   Terrain: 0,
@@ -44,7 +62,7 @@ class Game
     const aspect = app.width / app.height;
     const frustrum = 1;
     this.camera = new THREE.OrthographicCamera(-frustrum*aspect/2, frustrum*aspect/2, frustrum/2, -frustrum/2, 0.1, 100 );
-    this.camera.position.set(.5, 2, 2);
+    this.camera.position.set(0, 2, 2);
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
     this.scene.add(this.camera);
 
@@ -84,38 +102,94 @@ class Game
     this.level = new Level(LEVELS[levelNum]);
     this.tiles = [this.level.grid.width, this.level.grid.height];
     this.terrainSize = [this.tiles[0] * TILE_SIZE, this.tiles[1] * TILE_SIZE];
+
     this.terrain = [];
 
-    // Build terrain centered on the origin
-    for (let x = 0; x < this.tiles[0]; ++x) {
-      for (let y = 0; y < this.tiles[1]; ++y) {
-        let tile = new THREE.Mesh(
-          new THREE.BoxGeometry(TILE_SIZE, .05, TILE_SIZE),
-          new THREE.MeshLambertMaterial({ color: 0x6daa2c }));
-        const modelPos = this.gridToWorld(x,y);
-        tile.position.set(modelPos[0], 0, modelPos[1]);
+    // Terrain tiles, centered on the origin
+    const tileGeometry = new THREE.BoxGeometry(TILE_SIZE, .05, TILE_SIZE);
+    for (let z = 0;  z < this.tiles[1]; ++z)
+      for (let x = 0; x < this.tiles[0]; ++x)
+      {
+        const tile = new THREE.Mesh(
+          tileGeometry,
+          new THREE.MeshLambertMaterial({ color: x ^ z ? TILE_COLOR_1 : TILE_COLOR_2 }));
+
+        tile.position.set(
+          -this.terrainSize[0]/2 + (x + 0.5) * TILE_SIZE,
+          -0.025,
+          -this.terrainSize[1]/2 + (z + 0.5) * TILE_SIZE);
+
+        tile.isTile = true;
+        tile.receiveShadow = true;
         this.scene.add(tile);
-        tile.modelType = ModelTypes.Terrain;
-        tile.coords = [x,y];
         this.terrain.push(tile);
       }
-    }
-    // this.dirLight.target = this.terrain;
 
     // Populate the grid
-    for (let [thing,pos] of this.level.things)
-    {
-      const model = loadModel(this.app.data.windturbine);
-      model.scale.set(TILE_SIZE*0.5, TILE_SIZE*0.5,TILE_SIZE*0.5);
 
-      const modelPos = this.gridToWorld(pos[0], pos[1]);
-      model.position.set(modelPos[0], 0, modelPos[1]);
-      this.scene.add(model);
+    const THING_MODELS =
+    {
+      WindTurbine: this.app.data.windturbine,
+      SolarPanel: this.app.data.solarpanel,
+      Battery: this.app.data.battery,
+      Consumer: this.app.data.house,
+      Obstacle: this.app.data.rock
+    };
+
+    for (let pair of this.level.things)
+    {
+      const thing = pair[0];
+      const pos = pair[1];
+
+      let model;
+
+      if (thing.constructor.name === 'Consumer')
+      {
+        for (let i = 0; i < thing.size; ++i)
+        {
+          model = loadModel(THING_MODELS['Consumer']);
+          model.scale.set(TILE_SIZE*0.1, TILE_SIZE*0.1,TILE_SIZE*0.1);
+
+          const maxOffset = TILE_SIZE * 1;
+          const modelPos = this.gridToWorld(pos[0], pos[1]);
+          model.position.set(modelPos[0] + Math.random() * maxOffset, 0, modelPos[1] + Math.random() * maxOffset);
+          this.scene.add(model);
+        }
+      }
+      else
+      {
+        model = loadModel(THING_MODELS[thing.constructor.name]);
+        model.scale.set(TILE_SIZE*0.5, TILE_SIZE*0.5,TILE_SIZE*0.5);
+
+        const modelPos = this.gridToWorld(pos[0], pos[1]);
+        model.position.set(modelPos[0], 0, modelPos[1]);
+        this.scene.add(model);
+      }
 
       thing.model = model;
       model.thing = thing;
     }
 
+    const ambientLight = new THREE.AmbientLight(0x404040);
+    this.scene.add(ambientLight);
+
+    const dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
+    dirLight.position.set(4, 3, 4);
+    //dirLight.target = this.terrain;
+    dirLight.castShadow = true;
+    this.scene.add(dirLight);
+    // Lighter shadows:
+    // https://stackoverflow.com/questions/40938238/shadow-darkness-in-threejs-and-object-opacity
+
+    // Inventory
+    this.level.inventory.forEach((item, i) =>
+    {
+      const model = loadModel(THING_MODELS[item.type.name]);
+      model.scale.set(0.05, 0.05, 0.05);
+      model.position.set(-0.75,   0.1 * i, -1);
+      model.inventory = true;
+      this.camera.add(model);
+    });
   }
 
   render(dt)
@@ -161,21 +235,31 @@ class Game
     for (let inter of intersections)
     {
       // Inventory item
-      if (false)
+      if (isInInventory(inter.object))
       {
-        //console.log('inventory');
+        console.log('inventory');
         return;
       }
       // Built generator
       else if (isGenerator(inter.object))
       {
-        //console.log('generator');
+        console.log('generator');
         return;
       }
       // Empty tile
-      else if (inter.object === this.terrain)
+      else if (inter.object.isTile)
       {
-        //console.log('empty tile', this.worldToGrid(inter.point.x, inter.point.z));
+        const gridPos = this.worldToGrid(inter.point.x, inter.point.z);
+        console.log('empty tile', gridPos);
+
+        // Restore the color of the previously hovered tile
+        if (this.hoveredTile)
+          this.hoveredTile.material.color.setHex(gridPos[0] ^ gridPos[1] ? TILE_COLOR_1 : TILE_COLOR_2);
+
+        // Highlight the new one
+        this.hoveredTile = inter.object;
+        this.hoveredTile.material.color.setHex(TILE_COLOR_HOVER);
+
         return;
       }
     }
