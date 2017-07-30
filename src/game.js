@@ -24,6 +24,10 @@ function isGenerator(object)
 
 const TILE_SIZE = 0.2;
 
+const ModelTypes = {
+  Terrain: 0,
+};
+
 class Game
 {
   constructor(app)
@@ -71,6 +75,7 @@ class Game
         const modelPos = this.gridToWorld(x,y);
         tile.position.set(modelPos[0], 0, modelPos[1]);
         this.scene.add(tile);
+        tile.modelType = ModelTypes.Terrain;
         this.terrain.push(tile);
       }
     }
@@ -113,10 +118,10 @@ class Game
 
     for (let inter of intersections)
     {
-      if (inter.object === this.terrain)
-      {
-        return this.worldToGrid(inter.point.x, inter.point.z);
+      if (inter.object.modelType === ModelTypes.Terrain) {
+        return inter.object;
       }
+        //return this.worldToGrid(inter.point.x, inter.point.z);
     }
 
     return null;

@@ -5,6 +5,7 @@ STATES.Main = {
     this.game = new Game(this.app, 1);
     this.gameController = new GameController(this.game);
     this.pointer = {x:0, y:0};
+    this.highlightedCell = null;
   },
 
   render(dt) {
@@ -14,11 +15,20 @@ STATES.Main = {
 
   pointermove(event) {
 
-    // Forward mouse position relative to the canvas
+    // Update position relative to the canvas
     this.pointer.x = event.original.clientX - this.app.renderer.domElement.offsetLeft;
     this.pointer.y = event.original.clientY - this.app.renderer.domElement.offsetTop;
 
-    //this.game.pointermove(this.pointer);
+    // Highlight current tile
+    let cell = this.game.pickGridCell(this.pointer);
+    if (this.highlightedCell) {
+      this.highlightedCell.material.emissive = new THREE.Color(0);
+    }
+    if (cell) {
+      cell.material.emissive = new THREE.Color(0xf0f);
+      this.highlightedCell = cell;
+    }
+
   },
 
   pointerup(event) {
