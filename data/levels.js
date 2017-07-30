@@ -1,11 +1,11 @@
 const LEVELS = [
   {
-    generators: 'SS',
+    generators: 'WW',
     map: `....1.2...`,
   },
 
   {
-    generators: 'SSW',
+    generators: 'WWS',
     map: `.....
           .....
           .221.
@@ -14,7 +14,7 @@ const LEVELS = [
   },
 
   {
-    generators: 'SSWW',
+    generators: 'WWSS',
     map: `.....
           ..21.
           .2#1.
@@ -23,7 +23,7 @@ const LEVELS = [
   },
 
   {
-    generators: 'SSB',
+    generators: 'WWB',
     hasNight: true,
     map: `....1.2...`,
   },
