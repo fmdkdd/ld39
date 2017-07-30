@@ -45,7 +45,8 @@ function getInventoryItem(object)
 const TILE_SIZE = 0.2;
 const TILE_COLOR_1 = 0x6daa2c;
 const TILE_COLOR_2 = 0x79a92b;
-const TILE_COLOR_HOVER = 0x96a82a;
+const TILE_COLOR_HOVER = new THREE.Color(0xffff00);
+const TILE_COLOR_HOVER_ALPHA = 0.7;
 const DAY_CLEARCOLOR = 0x6dc2ca;
 const NIGHT_CLEARCOLOR = 0x00476e;
 
@@ -282,10 +283,11 @@ class Game
     if (!tile)
       return;
 
-    if (highlight)
-      tile.material.color.setHex(TILE_COLOR_HOVER);
-    else
+    if (highlight) {
+      tile.material.color.lerp(TILE_COLOR_HOVER, TILE_COLOR_HOVER_ALPHA);
+    } else {
       tile.material.color.setHex(tile.coords[0] ^ tile.coords[1] ? TILE_COLOR_1 : TILE_COLOR_2);
+    }
   }
 
   eventToCameraPos(event)
