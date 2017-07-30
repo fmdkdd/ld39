@@ -17,28 +17,29 @@ function dispatch(eventName, detail = null) {
   document.dispatchEvent(new CustomEvent(eventName, {detail}))
 }
 
-function isGenerator(object)
+// Look for a generator in parents
+function getGenerator(object)
 {
   do {
     if (object.thing instanceof Generator)
-      return true;
+      return object.thing;
 
     object = object.parent;
   } while(object.parent);
 
-  return false;
+  return null;
 }
 
-function isInInventory(object)
+function getInventoryItem(object)
 {
   do {
     if (object.inventory)
-      return true;
+      return object.item;
 
     object = object.parent;
   } while(object.parent);
 
-  return false;
+  return null;
 }
 
 const TILE_SIZE = 0.2;
@@ -52,11 +53,22 @@ const ModelTypes = {
   Terrain: 0,
 };
 
+let THING_MODELS;
+
 class Game
 {
   constructor(app)
   {
     this.app = app;
+
+    THING_MODELS =
+    {
+      WindTurbine: this.app.data.windturbine,
+      SolarPanel: this.app.data.solarpanel,
+      Battery: this.app.data.battery,
+      Consumer: this.app.data.house,
+      Obstacle: this.app.data.rock
+    };
 
     this.scene = new THREE.Scene();
     this.raycaster = new THREE.Raycaster();
@@ -80,12 +92,22 @@ class Game
     // Lighter shadows:
     // https://stackoverflow.com/questions/40938238/shadow-darkness-in-threejs-and-object-opacity
 
+    document.addEventListener('init terrain', ev => {
+      let {width, height} = ev.detail;
+
+      this.tiles = [width, height];
+      this.terrainSize = [this.tiles[0] * TILE_SIZE, this.tiles[1] * TILE_SIZE];
+    });
+
     document.addEventListener('level put thing', ev => {
       let {thing, pos} = ev.detail;
       if (thing.model) {
         const modelPos = this.gridToWorld(pos[0], pos[1]);
         thing.model.position.set(modelPos[0], 0, modelPos[1]);
         thing.model.visible = true;
+      }
+      else {
+        this.putNewThing(thing, pos);
       }
     });
 
@@ -106,9 +128,6 @@ class Game
   }
 
   loadLevel(level) {
-    this.tiles = [level.grid.width, level.grid.height];
-    this.terrainSize = [this.tiles[0] * TILE_SIZE, this.tiles[1] * TILE_SIZE];
-
     this.terrain = [];
 
     // Terrain tiles, centered on the origin
@@ -126,6 +145,7 @@ class Game
           -this.terrainSize[1]/2 + (z + 0.5) * TILE_SIZE);
 
         tile.modelType = ModelTypes.Terrain;
+        tile.tile = tile;
         tile.coords = [x, z];
         this.updateTileColor(tile, false);
         tile.receiveShadow = true;
@@ -134,56 +154,6 @@ class Game
         this.terrain.push(tile);
       }
 
-    // Populate the grid
-
-    const THING_MODELS =
-    {
-      WindTurbine: this.app.data.windturbine,
-      SolarPanel: this.app.data.solarpanel,
-      Battery: this.app.data.battery,
-      Consumer: this.app.data.house,
-      Obstacle: this.app.data.rock
-    };
-
-    for (let pair of level.things)
-    {
-      const thing = pair[0];
-      const pos = pair[1];
-
-      let model;
-
-      if (thing.constructor.name === 'Consumer')
-      {
-        model = new THREE.Object3D();
-        const modelPos = this.gridToWorld(pos[0], pos[1]);
-        model.position.set(modelPos[0], 0, modelPos[1]);
-
-        for (let i = 0; i < thing.size; ++i)
-        {
-          const house = loadModel(THING_MODELS['Consumer']);
-          house.scale.set(TILE_SIZE*0.1, TILE_SIZE*0.1,TILE_SIZE*0.1);
-
-          const maxOffset = TILE_SIZE * 0.5;
-          house.position.set(Math.random() * maxOffset, 0, Math.random() * maxOffset);
-          model.add(house);
-        }
-
-        this.scene.add(model);
-      }
-      else
-      {
-        model = loadModel(THING_MODELS[thing.constructor.name]);
-        model.scale.set(TILE_SIZE*0.5, TILE_SIZE*0.5,TILE_SIZE*0.5);
-
-        const modelPos = this.gridToWorld(pos[0], pos[1]);
-        model.position.set(modelPos[0], 0, modelPos[1]);
-        this.scene.add(model);
-      }
-
-      thing.model = model;
-      model.thing = thing;
-    }
-
     // Inventory
     level.inventory.forEach((item, i) =>
     {
@@ -191,36 +161,95 @@ class Game
       model.scale.set(0.05, 0.05, 0.05);
       model.position.set(-0.75,   0.1 * i, -1);
       model.inventory = true;
+      model.item = item;
       this.camera.add(model);
     });
+  }
+
+  putNewThing(thing, pos)
+  {
+    let model;
+
+    if (thing.constructor.name === 'Consumer')
+    {
+      model = new THREE.Object3D();
+      const modelPos = this.gridToWorld(pos[0], pos[1]);
+      model.position.set(modelPos[0], 0, modelPos[1]);
+
+      for (let i = 0; i < thing.size; ++i)
+      {
+        const house = loadModel(THING_MODELS['Consumer']);
+        house.scale.set(TILE_SIZE*0.1, TILE_SIZE*0.1,TILE_SIZE*0.1);
+
+        const maxOffset = TILE_SIZE * 0.5;
+        house.position.set(Math.random() * maxOffset, 0, Math.random() * maxOffset);
+        model.add(house);
+      }
+
+      this.scene.add(model);
+    }
+    else
+    {
+      model = loadModel(THING_MODELS[thing.constructor.name]);
+      model.scale.set(TILE_SIZE*0.5, TILE_SIZE*0.5,TILE_SIZE*0.5);
+
+      const modelPos = this.gridToWorld(pos[0], pos[1]);
+      model.position.set(modelPos[0], 0, modelPos[1]);
+      this.scene.add(model);
+    }
+
+    thing.model = model;
+    model.thing = thing;
   }
 
   render(dt) {
   }
 
-  // Pick and return the grid tile at point coordinates (in canvas space), or
-  // null
-  pickGridTile(point, night) {
+  updatePicking(point, night) {
+
     let width = this.app.renderer.domElement.clientWidth;
     if (night) {
       width /= 2;
     }
 
-    // [canvas width, canvas height] -> [-1, 1]
-    const cursor = {
+    this.pickingResult = {};
+
+    point = {
       x: (point.x / width) * 2 - 1,
       y: -((point.y / this.app.renderer.domElement.clientHeight) * 2 - 1)
     };
-    this.raycaster.setFromCamera(cursor, this.camera);
-    const intersections = this.raycaster.intersectObjects(this.scene.children, true);
+    const intersections = this.raycast(point);
 
-    for (let inter of intersections) {
-      if (inter.object.modelType === ModelTypes.Terrain) {
-        return inter.object;
+    for (let inter of intersections)
+    {
+      // Inventory item
+      if (!this.pickingResult.inventoryItem && getInventoryItem(inter.object))
+      {
+        this.pickingResult.inventoryItem = getInventoryItem(inter.object);
+      }
+      // Generator
+      else if (!this.pickingResult.generator && getGenerator(inter.object))
+      {
+        this.pickingResult.generator = getGenerator(inter.object);
+      }
+      // Empty tile
+      else if (!this.pickingResult.tile && inter.object.modelType === ModelTypes.Terrain)
+      {
+        this.pickingResult.tile = inter.object.tile;
       }
     }
+  }
 
-    return null;
+  pickGridTile() {
+    return this.pickingResult.tile;
+  }
+
+  pickInventoryItem() {
+    return this.pickingResult.inventoryItem;
+  }
+
+  pickGenerator() {
+    return this.pickingResult.generator;
   }
 
   updateTileColor(tile, highlight)
@@ -234,11 +263,26 @@ class Game
       tile.material.color.setHex(tile.coords[0] ^ tile.coords[1] ? TILE_COLOR_1 : TILE_COLOR_2);
   }
 
+  eventToCameraPos(event)
+  {
+    // [canvas width, canvas height] -> [-1, 1]
+    return {
+      x: (event.x / this.app.renderer.domElement.clientWidth) * 2 - 1,
+      y: -((event.y / this.app.renderer.domElement.clientHeight) * 2 - 1)
+    };
+  }
+
+  raycast(cameraPos)
+  {
+    this.raycaster.setFromCamera(cameraPos, this.camera);
+    return this.raycaster.intersectObjects(this.scene.children, true);
+  }
+
   gridToWorld(x, y)
   {
     return [
-      x * TILE_SIZE - this.terrainSize[0] / 2,
-      y * TILE_SIZE - this.terrainSize[1] / 2
+      x * TILE_SIZE - this.terrainSize[0] / 2 + TILE_SIZE / 2,
+      y * TILE_SIZE - this.terrainSize[1] / 2 + TILE_SIZE / 2
     ];
   }
 

@@ -41,6 +41,9 @@ class Level {
     if (width == 0) throw new Error('Empty level');
 
     this.grid = new Grid(width, height);
+
+    dispatch('init terrain', {width, height});
+
     // Map from things to their position in the grid
     this.things = new Map();
 

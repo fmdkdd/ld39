@@ -73,7 +73,9 @@ class GameController {
 
   pointermove(pointer) {
 
-    let tile = this.game.pickGridTile(pointer, this.level.hasNight);
+    this.game.updatePicking(pointer, this.level.hasNight);
+
+    let tile = this.game.pickGridTile();
 
     if (tile) {
       // Restore the color of the previously hovered tile
@@ -96,6 +98,11 @@ class GameController {
 
       this.clickAt(x,y);
       console.log('Thing held: ', this.heldThing);
+    }
+
+    const item = this.game.pickInventoryItem();
+    if (item) {
+      this.pickUpFromInventory(item);
     }
   }
 

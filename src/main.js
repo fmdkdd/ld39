@@ -21,7 +21,7 @@ STATES.Main = {
   },
 
   pointerdown(event) {
-    this.gameController.pointerdown(event);
+    this.gameController.pointerdown(this.pointer);
   },
 };
 
