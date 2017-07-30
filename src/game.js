@@ -53,20 +53,28 @@ class Game
     if (this.level) {
       for (let [thing,_] of this.level.things) {
         this.scene.remove(thing.model);
-        this.scene.remove(this.terrain);
+        this.terrain.forEach(t => this.scene.remove(t));
       }
     }
 
     this.level = new Level(LEVELS[levelNum]);
     this.tiles = [this.level.grid.width, this.level.grid.height];
     this.terrainSize = [this.tiles[0] * TILE_SIZE, this.tiles[1] * TILE_SIZE];
+    this.terrain = [];
 
     // Build terrain centered on the origin
-    this.terrain = new THREE.Mesh(
-      new THREE.BoxGeometry(this.terrainSize[0], .05, this.terrainSize[1]),
-      new THREE.MeshLambertMaterial({ color: 0x6daa2c }));
-    this.scene.add(this.terrain);
-    this.dirLight.target = this.terrain;
+    for (let x = 0; x < this.tiles[0]; ++x) {
+      for (let y = 0; y < this.tiles[1]; ++y) {
+        let tile = new THREE.Mesh(
+          new THREE.BoxGeometry(TILE_SIZE, .05, TILE_SIZE),
+          new THREE.MeshLambertMaterial({ color: 0x6daa2c }));
+        const modelPos = this.gridToWorld(x,y);
+        tile.position.set(modelPos[0], 0, modelPos[1]);
+        this.scene.add(tile);
+        this.terrain.push(tile);
+      }
+    }
+    // this.dirLight.target = this.terrain;
 
     // Populate the grid
     for (let [thing,pos] of this.level.things)
