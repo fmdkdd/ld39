@@ -118,24 +118,41 @@ class Level {
 
     let counters = new Map();
     for (let th of this.things.keys()) {
-      if (th instanceof Consumer) {
+      if (th instanceof Consumer ||
+          th instanceof Battery) {
         counters.set(th, 0);
       }
     }
 
+    // Let the generator add to the power counters
+    // Distribute power from the turbine and panel first,
+    // since 1) the battery has to be powered by one of them,
+    // and 2) the battery will distribute the remaining power.
     for (let th of this.things.keys()) {
-      if (th instanceof Generator) {
-        // Let the generator add to the power counters
+      if (th instanceof WindTurbine ||
+          th instanceof SolarPanel) {
         th.distributePower(this, counters, this.hasNight);
       }
     }
 
-    // Gather any mispowered (unpowered/overloaded) consumer, with the current
-    // value
+    for (let th of this.things.keys()) {
+      if (th instanceof Battery) {
+        th.distributePower(this, counters);
+      }
+    }
+
+    // Gather any mispowered (unpowered/overloaded) consumer or battery, with
+    // the current value
     let mispowered = [];
-    for (let [consumer, power] of counters.entries()) {
-      if (consumer.size !== power) {
-        mispowered.push({consumer, current_power: power});
+    for (let [thing, power] of counters.entries()) {
+      if (thing instanceof Consumer) {
+        if (thing.size !== power) {
+          mispowered.push({thing, current_power: power});
+        }
+      } else if (thing instanceof Battery) {
+        if (power === 0) {
+          mispowered.push({thing, current_power: power});
+        }
       }
     }
     // If there are no mispowered consumers, the level is solved!

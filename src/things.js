@@ -145,7 +145,8 @@ class WindTurbine extends Generator {
     this.getPoweredCells(ox,oy,night).forEach(([x,y]) => {
       if (level.inBounds(x,y)) {
         let thing = level.getThingAt(x, y);
-        if (thing instanceof Consumer) {
+        if (thing instanceof Consumer ||
+            thing instanceof Battery) {
           counters.set(thing, counters.get(thing) + 1);
         }
       }
@@ -189,7 +190,8 @@ class SolarPanel extends Generator {
     this.getPoweredCells(ox,oy,night).forEach(([x,y]) => {
       if (level.inBounds(x,y)) {
         let thing = level.getThingAt(x, y);
-        if (thing instanceof Consumer) {
+        if (thing instanceof Consumer ||
+          thing instanceof Battery) {
           counters.set(thing, counters.get(thing) + 1);
         }
       }
@@ -212,8 +214,66 @@ class Battery extends Generator {
   }
 
   distributePower(level, counters) {
-    // TODO: distribute power to all connected components of neighboring
-    // consumers.
+    // Distribute power to all connected components of neighboring
+    // consumer, but only if the battery is powered during the day.
+
+    let powered = counters.get(this) > 0;
+
+    // Don't distribute power if unpowered
+    if (!powered) return;
+
+    let [ox,oy] = level.getThingXY(this);
+
+    // Collect all neighbors that are next to this battery, or that are next to
+    // a neighbor that's next to this battery, etc.
+    let neighbors = connectedComponents(ox,oy,level);
+
+    // Match the power distribution
+    neighbors.forEach(c => {
+      counters.set(c, c.size);
+    });
+  }
+}
+
+function connectedComponents(x,y, level) {
+  // Locations (x,y) to visit
+  let queue = [];
+  // Already seen locations
+  let seen = new Set();
+  let consumers = [];
+
+  // Start by searching around (x,y)
+  queue.push.apply(queue, neighborsOf(x,y));
+
+  while (queue.length > 0) {
+    let [x,y] = queue.shift();
+
+    // HACK: Set can do equality of array [x,y],
+    // so we convert to unique value
+    if (seen.has(y * 1000 + x)) {
+      continue;
+    }
+
+    if (!level.inBounds(x,y)) {
+      continue;
+    }
+
+    let thing = level.getThingAt(x,y);
+
+    if (thing instanceof Consumer) {
+      consumers.push(thing);
+      queue.push.apply(queue, neighborsOf(x,y));
+    }
+
+    seen.add(y * 1000 + x);
   }
 
+  return consumers;
+}
+
+function neighborsOf(x,y) {
+  return [[x+1,y],
+          [x-1,y],
+          [x,y+1],
+          [x,y-1]];
 }

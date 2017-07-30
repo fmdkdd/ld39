@@ -53,8 +53,8 @@ class GameController {
       // TODO: visual feedback could be that houses themselves are dark at
       // first, then they light up when they are powered.
       for (let m of result.mispowered) {
-        // Get tile below consumer
-        let [x,y] = this.level.getThingXY(m.consumer);
+        // Get tile below thing
+        let [x,y] = this.level.getThingXY(m.thing);
         let tile = this.game.getTileAt(x,y);
 
         // Paint it red

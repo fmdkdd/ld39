@@ -12,8 +12,6 @@
 
 @fmdkdd:
 - add more levels
-- validation for night levels
-- battery distributePower
 - sound effects
 - background music
 
@@ -23,9 +21,12 @@ unassigned:
 - title screen?
 - visual polish (transitions)
 - random houses can overlap (depends on camera?)
-
+- visual feedback for POWERED battery (we forgot that!)
+- duplicate next level button in night levels (and too small, too high)
 
 
 done:
 - level validation
 - can go to next level
+- validation for night levels
+- battery distributePower
