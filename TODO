@@ -1,7 +1,5 @@
 @merwan:
-- poweredCells feedback (zones)
-- solar panel model (texture?)
-- fix turbine 'head' rotating (only the part connected to the blades should rotate)
+- fix models rotation (all models should face the same direction)
 - shadows are too strong (and too large?)
 - outline feedback on consumers (same effect)
 
@@ -16,7 +14,6 @@ unassigned:
 - adjust camera to see whole levels (maybe add camera data in level)
 - title screen?
 - visual polish (transitions)
-- random houses can overlap (depends on camera?)
 - visual feedback for POWERED battery (we forgot that!)
 - duplicate next level button in night levels (and too small, too high)
 - highlight is applied to particles (maybe removing the particles should fix it?)

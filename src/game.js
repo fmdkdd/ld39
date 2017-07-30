@@ -31,6 +31,8 @@ function getGenerator(object)
 }
 
 const TILE_SIZE = 0.2;
+const THING_SCALE = 0.5;
+
 const TILE_COLOR_1 = 0x6daa2c;
 const TILE_COLOR_2 = 0x79a92b;
 const TILE_COLOR_HOVER = new THREE.Color(0xffff00);
@@ -144,6 +146,9 @@ class Game
       else {
         this.putNewThing(thing, pos);
       }
+
+      if (thing instanceof Generator)
+        this.updateCoverage(thing, pos);
     });
 
     document.addEventListener('level removed thing', ev => {
@@ -155,7 +160,15 @@ class Game
 
     document.addEventListener('thing rotated', ev => {
       let {thing} = ev.detail;
-      thing.model.rotation.y = thing.rotationAsRadian();
+
+      // Make sure to rotate the thing's model and not the root
+      thing.model.getObjectByName('model').rotation.y = thing.rotationAsRadian();
+
+      if (thing instanceof Generator)
+      {
+        const pos = this.app.state.gameController.level.getThingXY(thing); // sorry
+        this.updateCoverage(thing, pos);
+      }
     });
   }
 
@@ -205,13 +218,16 @@ class Game
 
   putNewThing(thing, pos)
   {
+    // ROOT object with unit scale to attach other objects without issues
+    const root = new THREE.Object3D();
+    const modelPos = this.gridToWorld(pos[0], pos[1]);
+    root.position.set(modelPos[0], 0, modelPos[1]);
+
     let model;
 
     if (thing.constructor.name === 'Consumer')
     {
       model = new THREE.Object3D();
-      const modelPos = this.gridToWorld(pos[0], pos[1]);
-      model.position.set(modelPos[0], 0, modelPos[1]);
 
       const positions = [[-TILE_SIZE * 0.25, -TILE_SIZE * 0.25], [TILE_SIZE * 0.25, TILE_SIZE * -0.05], [-TILE_SIZE * 0.15, TILE_SIZE * 0.25]];
       for (let i = 0; i < thing.size; ++i)
@@ -224,30 +240,45 @@ class Game
       }
 
       model.rotation.y = Math.random() * 360;
-      this.scene.add(model);
     }
     else
     {
       model = loadModel(THING_MODELS[thing.constructor.name]);
-      model.scale.set(TILE_SIZE*0.5, TILE_SIZE*0.5,TILE_SIZE*0.5);
-
-      const modelPos = this.gridToWorld(pos[0], pos[1]);
-      model.position.set(modelPos[0], 0, modelPos[1]);
-      this.scene.add(model);
-
-
-      if (thing instanceof WindTurbine ||
-          thing instanceof SolarPanel) {
-        model.rotation.y = thing.rotationAsRadian();
-      }
+      model.scale.set(TILE_SIZE*THING_SCALE, TILE_SIZE*THING_SCALE,TILE_SIZE*THING_SCALE);
     }
 
-    if (ModelScales[thing.constructor.name]) {
-      model.scale.multiplyScalar(ModelScales[thing.constructor.name]);
+    model.name = 'model'; // To differentiate model from root
+
+    thing.model = root;
+    root.thing = thing;
+
+    root.add(model);
+    this.scene.add(root);
+  }
+
+  updateCoverage(thing, gridPos)
+  {
+    // Remove previous coverage
+    const oldCoverage = thing.model.getObjectByName('coverage');
+    if (oldCoverage)
+      thing.model.remove(oldCoverage);
+
+    const coverage = new THREE.Object3D();
+    coverage.name = 'coverage';
+
+    for (let tile of thing.getPoweredCells(gridPos[0], gridPos[1], false)) // TODO night
+    {
+      const edges = new THREE.EdgesGeometry(new THREE.PlaneGeometry(TILE_SIZE, TILE_SIZE));
+      const plane = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff }));
+
+      const worldPos = this.gridToWorld(tile[0] - gridPos[0], tile[1] - gridPos[1]);
+      plane.position.set((tile[0] - gridPos[0]) * TILE_SIZE, 0.001, (tile[1] - gridPos[1]) * TILE_SIZE);
+      plane.rotation.x = Math.PI / 2;
+
+      coverage.add(plane);
     }
 
-    thing.model = model;
-    model.thing = thing;
+    thing.model.add(coverage);
   }
 
   moveToCursor(thing, pointer)

@@ -153,7 +153,7 @@ class WindTurbine extends Generator {
     });
   }
 
-  render(dt) {console.log(this.model.getObjectByName('blades'));
+  render(dt) {
     this.model.getObjectByName('blades').rotation.y += dt * 0.5;
   }
 }
