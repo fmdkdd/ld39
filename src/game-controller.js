@@ -95,15 +95,18 @@ class GameController {
 
     let tile = this.game.pickGridTile();
 
-    // let thing = this.level.getThingAt(tile);
-
     if (tile) {
       // Restore the color of the previously hovered tile
       this.game.updateTileColor(this.hoveredTile, false);
 
-      // Highlight the hovered tile
-      this.hoveredTile = tile;
-      this.game.updateTileColor(this.hoveredTile, true);
+
+      // Don't highlight tiles with consumer on them
+      let thing = this.level.getThingAt(tile.coords[0], tile.coords[1]);
+      if (!(thing instanceof Consumer)) {
+        // Highlight the hovered tile
+        this.hoveredTile = tile;
+        this.game.updateTileColor(this.hoveredTile, true);
+      }
     } else {
       // No tile, unhlighlight
       this.game.updateTileColor(this.hoveredTile, false);

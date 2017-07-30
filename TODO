@@ -4,6 +4,7 @@
 - fix models rotation (all models should face the same direction)
 - adjust models scale
 - fix turbine 'head' rotating (only the part connected to the blades should rotate)
+- shadows are too strong (and too large?)
 
 
 @fmdkdd:
@@ -11,6 +12,7 @@
 - transition to next level
 - sound effects
 - background music
+
 
 unassigned:
 - title screen?
