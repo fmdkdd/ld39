@@ -1,35 +1,8 @@
-// Represents generators available for each level
-class InventoryItem {
-
-  constructor(type) {
-    if (type == null) throw new Error('InventoryItem type is undefined');
-    this.type = type;
-    this.available = true;
-  }
-
-  instantiate() {
-    return new this.type();
-  }
-
-}
-
 // A playable level loaded from static data
 class Level {
 
   // Populate the grid from the given string level data
   constructor(data) {
-    // Parse generators
-    if (!data.generators) throw new Error('Empty generators');
-    this.inventory = Array.prototype.map.call(data.generators, (g => {
-      switch (g) {
-      case 'W': return new InventoryItem(WindTurbine);
-      case 'S': return new InventoryItem(SolarPanel);
-      case 'B': return new InventoryItem(Battery);
-      default:
-        throw new Error(`Unrecognized generator symbol: '${g}'`);
-      }
-    }));
-
     // Parse map
     let lines = data.map
         .replace(/ /g, '')  // remove any space used for alignment
@@ -53,19 +26,20 @@ class Level {
         let col = row[x];
         switch (col) {
           // floor (skip)
-        case '.':
-          break;
+        case '.': break;
 
           // obstacle
-        case '#':
-          this.putThingAt(new Obstacle(), x,y);
-          break;
+        case '#': this.putThingAt(new Obstacle(), x,y); break;
 
           // consumer
         case '1': case '2': case '3': case '4':
           let size = parseInt(col, 10);
           this.putThingAt(new Consumer(size), x,y);
           break;
+
+        case 'W': this.putThingAt(new WindTurbine(), x,y); break;
+        case 'S': this.putThingAt(new SolarPanel(), x,y); break;
+        case 'B': this.putThingAt(new Battery(), x,y); break;
 
         default:
           throw new Error(`Unrecognized level symbol: '${col}'`);
@@ -131,21 +105,6 @@ class Level {
     dispatch('level removed thing', {thing, pos: [x,y]});
   }
 
-  // Mark inventory item as unavailable
-  markUnavailable(item) {
-    item.available = false;
-
-    dispatch('item picked from inventory', {item});
-  }
-
-  // Mark the first inventory item that matches thing's type as available
-  markAvailable(thing) {
-    let item = this.inventory.find(item => item.type == thing.constructor);
-    if (!item) throw new Error("Thing is not allowed in the level inventory");
-    item.available = true;
-
-    dispatch('item put in inventory', {item});
-  }
 
   // Validate this level: try to distribute power from generators to consumers.
   //

@@ -5,7 +5,6 @@ class GameController {
     if (!app) throw new Error('App is undefined');
     this.app = app;
     this.game = new Game(this.app);
-    this.inventoryView = new InventoryView(this.app);
     this.heldThing = null;
     this.currentLevel = 0;
   }
@@ -17,21 +16,6 @@ class GameController {
     this.level = new Level(LEVELS[num]);
     this.currentLevel = num;
     this.game.loadLevel(this.level);
-    this.inventoryView.loadLevel(this.level);
-  }
-
-  // Take generator from inventory and put it in the currently held slot
-  pickUpFromInventory(item) {
-    this.level.markUnavailable(item);
-    this.heldThing = item.instantiate();
-  }
-
-  // Put held item back in inventory.  Do nothing if we have no held item.
-  releaseHeldThing() {
-    if (this.heldThing) {
-      this.level.markAvailable(this.heldThing);
-      this.heldThing = null;
-    }
   }
 
   // Put the held item at (x,y) in the level.  Do nothing if we have no held item.
@@ -90,7 +74,6 @@ class GameController {
   pointermove(pointer) {
 
     this.game.updatePicking(pointer, this.level.hasNight);
-    this.inventoryView.updatePicking(pointer, this.level.hasNight);
 
     let tile = this.game.pickGridTile();
 
@@ -113,11 +96,6 @@ class GameController {
       let [x,y] = this.hoveredTile.coords;
       this.clickAt(x,y);
     }
-
-    const item = this.inventoryView.pickInventoryItem();
-    if (item && item.available) {
-      this.pickUpFromInventory(item);
-    }
   }
 
   rightclick() {
@@ -133,7 +111,6 @@ class GameController {
         thing.render(dt);
     }
 
-    this.inventoryView.render(dt);
     this.game.render(dt);
 
     let width = this.app.width;
@@ -177,15 +154,6 @@ class GameController {
       this.app.renderer.clear();
       this.app.renderer.render(this.game.scene, this.game.camera);
     }
-
-    // Inventory
-
-    this.inventoryView.render(dt);
-
-    this.app.renderer.setViewport(0, 0, this.app.width, this.app.height);
-    this.app.renderer.setScissorTest(false);
-    this.app.renderer.setClearColor(0x000000, 0);
-    this.app.renderer.render(this.inventoryView.scene, this.inventoryView.camera);
   }
 
 }

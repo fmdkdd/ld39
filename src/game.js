@@ -30,18 +30,6 @@ function getGenerator(object)
   return null;
 }
 
-function getInventoryItem(object)
-{
-  do {
-    if (object.inventory)
-      return object.item;
-
-    object = object.parent;
-  } while(object.parent);
-
-  return null;
-}
-
 const TILE_SIZE = 0.2;
 const TILE_COLOR_1 = 0x6daa2c;
 const TILE_COLOR_2 = 0x79a92b;
