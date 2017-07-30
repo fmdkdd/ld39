@@ -24,6 +24,7 @@ class GameController {
     this.currentLevel = num;
     this.currentLevelSolved = false;
     this.game.loadLevel(this.level);
+    this.game.hideNextLevelButton();
   }
 
   // Proceed to next level, or to exit screen
@@ -46,6 +47,8 @@ class GameController {
         tile.material.emissive.setHex(0);
       }
 
+      this.game.hideNextLevelButton();
+
       // TODO: visual feedback could be that houses themselves are dark at
       // first, then they light up when they are powered.
       for (let m of result.mispowered) {
@@ -58,7 +61,7 @@ class GameController {
       }
 
       // The level is solved, offer to proceed to next level
-      if (result.solved) {
+      if (result.solved || this.currentLevelSolved) {
         // once you've solved it once, that's enough
         this.currentLevelSolved = true;
 
@@ -149,6 +152,8 @@ class GameController {
     if (this.hoveredTile) {
       let [x,y] = this.hoveredTile.coords;
       this.clickAt(x,y);
+    } else if (this.game.pickButton()) {
+      this.nextLevel();
     }
   }
 

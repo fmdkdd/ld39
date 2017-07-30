@@ -40,6 +40,7 @@ const NIGHT_CLEARCOLOR = 0x00476e;
 
 const ModelTypes = {
   Terrain: 0,
+  NextLevelButton: 1,
 };
 
 let THING_MODELS;
@@ -81,6 +82,15 @@ class Game
     // Lighter shadows:
     // https://stackoverflow.com/questions/40938238/shadow-darkness-in-threejs-and-object-opacity
 
+    let sprite = new THREE.Sprite();
+    // TODO: add texture with arrow '->'
+    sprite.position.set(.8, 0, .3);
+    sprite.scale.multiplyScalar(0.2);
+    sprite.modelType = ModelTypes.NextLevelButton;
+    this.nextLevelButton = sprite;
+    sprite.visible = false;
+    this.scene.add(sprite);
+
     document.addEventListener('init terrain', ev => {
       let {width, height} = ev.detail;
 
@@ -114,7 +124,11 @@ class Game
   }
 
   showNextLevelButton() {
-    // TODO:
+    this.nextLevelButton.visible = true;
+  }
+
+  hideNextLevelButton() {
+    this.nextLevelButton.visible = false;
   }
 
   unloadLevel(level) {
@@ -226,6 +240,10 @@ class Game
       {
         this.pickingResult.tile = inter.object.tile;
       }
+      // Next level button
+      else if (!this.pickingResult.button && inter.object.modelType === ModelTypes.NextLevelButton) {
+        this.pickingResult.nextLevelButton = inter.object;
+      }
     }
   }
 
@@ -235,6 +253,10 @@ class Game
 
   pickGenerator() {
     return this.pickingResult.generator;
+  }
+
+  pickButton() {
+    return this.pickingResult.nextLevelButton;
   }
 
   updateTileColor(tile, highlight, mispowered)
