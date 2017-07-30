@@ -189,12 +189,24 @@ class SolarPanel extends Generator {
     });
   }
 
+  rotate() {
+    // Only two variations for solar panels
+    this.rotation = (this.rotation + 1) % 2;
+
+    dispatch('thing rotated', {thing: this});
+  }
+
 }
 
 class Battery extends Generator {
 
   constructor() {
     super(`battery-${Thing.ID++}`);
+  }
+
+  distributePower(level, counters) {
+    // TODO: distribute power to all connected components of neighboring
+    // consumers.
   }
 
 }
