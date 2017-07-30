@@ -208,16 +208,17 @@ class Game
       const modelPos = this.gridToWorld(pos[0], pos[1]);
       model.position.set(modelPos[0], 0, modelPos[1]);
 
+      const positions = [[-TILE_SIZE * 0.25, -TILE_SIZE * 0.25], [TILE_SIZE * 0.25, TILE_SIZE * -0.05], [-TILE_SIZE * 0.15, TILE_SIZE * 0.25]];
       for (let i = 0; i < thing.size; ++i)
       {
         const house = loadModel(THING_MODELS['Consumer']);
+        house.position.set(positions[i][0], 0, positions[i][1]);
+        house.rotation.y = Math.random() * 360;
         house.scale.set(TILE_SIZE*0.1, TILE_SIZE*0.1,TILE_SIZE*0.1);
-
-        const maxOffset = TILE_SIZE * 0.5;
-        house.position.set(Math.random() * maxOffset, 0, Math.random() * maxOffset);
         model.add(house);
       }
 
+      model.rotation.y = Math.random() * 360;
       this.scene.add(model);
     }
     else
@@ -366,7 +367,7 @@ class Game
     else if (highlight) {
       tile.material.color.lerp(TILE_COLOR_HOVER, TILE_COLOR_HOVER_ALPHA);
     } else {
-      tile.material.color.setHex(tile.coords[0] ^ tile.coords[1] ? TILE_COLOR_1 : TILE_COLOR_2);
+      tile.material.color.setHex((tile.coords[0] & 1) ^ (tile.coords[1] & 1) ? TILE_COLOR_1 : TILE_COLOR_2);
     }
   }
 
