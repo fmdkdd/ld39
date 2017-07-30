@@ -12,6 +12,8 @@
 
 @fmdkdd:
 - add more levels
+- validation for night levels
+- battery distributePower
 - sound effects
 - background music
 
@@ -20,6 +22,7 @@ unassigned:
 - adjust camera to see whole levels (maybe add camera data in level)
 - title screen?
 - visual polish (transitions)
+- random houses can overlap (depends on camera?)
 
 
 
