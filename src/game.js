@@ -113,6 +113,10 @@ class Game
     });
   }
 
+  showNextLevelButton() {
+    // TODO:
+  }
+
   unloadLevel(level) {
     // Remove all objects from the previous level, if any
     for (let [thing,_] of level.things) {

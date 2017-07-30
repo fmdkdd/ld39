@@ -1,14 +1,14 @@
 @merwan:
-- poweredCells feedback
-- solar panel model (texture?)
 - fix models rotation (all models should face the same direction)
+- obstacle model cannot be loaded
+- poweredCells feedback (zones)
+- solar panel model (texture?)
 - adjust models scale
 - fix turbine 'head' rotating (only the part connected to the blades should rotate)
 - shadows are too strong (and too large?)
 
 
 @fmdkdd:
-- level validation
 - transition to next level
 - sound effects
 - background music
@@ -17,3 +17,8 @@
 unassigned:
 - title screen?
 - visual polish
+
+
+
+done:
+- level validation

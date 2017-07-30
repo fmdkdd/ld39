@@ -7,10 +7,13 @@ class GameController {
     this.game = new Game(this.app);
     this.heldThing = null;
     this.currentLevel = 0;
+    this.currentLevelSolved = false;
 
     document.addEventListener('level put thing', ev => this.validate());
     document.addEventListener('level removed thing', ev => this.validate());
     document.addEventListener('thing rotated', ev => this.validate());
+
+    document.addEventListener('next level clicked', ev => this.nextLevel());
   }
 
   loadLevel(num) {
@@ -19,7 +22,19 @@ class GameController {
     }
     this.level = new Level(LEVELS[num]);
     this.currentLevel = num;
+    this.currentLevelSolved = false;
     this.game.loadLevel(this.level);
+  }
+
+  // Proceed to next level, or to exit screen
+  nextLevel() {
+    const next = this.currentLevel + 1;
+    if (next < LEVELS.length) {
+      // TODO: smooth transition?
+      this.loadLevel(next);
+    } else {
+      // TODO: No more levels, exit screen?
+    }
   }
 
   validate() {
@@ -40,6 +55,14 @@ class GameController {
 
         // Paint it red
         tile.material.emissive.setHex(0x880000);
+      }
+
+      // The level is solved, offer to proceed to next level
+      if (result.solved) {
+        // once you've solved it once, that's enough
+        this.currentLevelSolved = true;
+
+        this.game.showNextLevelButton();
       }
     }
   }
