@@ -84,6 +84,9 @@ class Level {
 
     this.grid.putAt(thing, x,y);
     this.things.set(thing, [x,y]);
+
+    // Signal thing has moved
+    dispatch('level put thing', {thing, pos: [x,y]});
   }
 
   // Whether [x,y] is in the level bounds
@@ -118,6 +121,8 @@ class Level {
     if (!this.hasThing(thing)) throw new Error(`Thing ${thing.name} not in level`);
     let [x,y] = this.things.get(thing);
     this.grid.putAt(null, x,y);
+
+    dispatch('level removed thing', {thing, pos: [x,y]});
   }
 
   // Mark inventory item as unavailable

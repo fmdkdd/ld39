@@ -10,6 +10,10 @@ function loadModel(json)
   return model;
 }
 
+function dispatch(eventName, detail = null) {
+  document.dispatchEvent(new CustomEvent(eventName, {detail}))
+}
+
 function isGenerator(object)
 {
   do {
@@ -50,6 +54,22 @@ class Game
     this.dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
     this.dirLight.position.set(4, 3, 4);
     this.scene.add(this.dirLight);
+
+    document.addEventListener('level put thing', ev => {
+      let {thing, pos} = ev.detail;
+      if (thing.model) {
+        const modelPos = this.gridToWorld(pos[0], pos[1]);
+        thing.model.position.set(modelPos[0], 0, modelPos[1]);
+        thing.model.visible = true;
+      }
+    });
+
+    document.addEventListener('level removed thing', ev => {
+      let thing = ev.detail.thing;
+      if (thing.model) {
+        thing.model.visible = false;
+      }
+    });
   }
 
   loadLevel(levelNum) {
@@ -76,6 +96,7 @@ class Game
         tile.position.set(modelPos[0], 0, modelPos[1]);
         this.scene.add(tile);
         tile.modelType = ModelTypes.Terrain;
+        tile.coords = [x,y];
         this.terrain.push(tile);
       }
     }
@@ -105,9 +126,9 @@ class Game
     }
   }
 
-  // Pick and return the grid cell at point coordinates (in canvas space), or
+  // Pick and return the grid tile at point coordinates (in canvas space), or
   // null
-  pickGridCell(point) {
+  pickGridTile(point) {
     // [canvas width, canvas height] -> [-1, 1]
     const cursor = {
       x: (point.x / this.app.renderer.domElement.clientWidth) * 2 - 1,

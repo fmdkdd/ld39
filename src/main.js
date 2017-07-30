@@ -5,7 +5,7 @@ STATES.Main = {
     this.game = new Game(this.app, 1);
     this.gameController = new GameController(this.game);
     this.pointer = {x:0, y:0};
-    this.highlightedCell = null;
+    this.highlightedTile = null;
   },
 
   render(dt) {
@@ -19,14 +19,14 @@ STATES.Main = {
     this.pointer.x = event.original.clientX - this.app.renderer.domElement.offsetLeft;
     this.pointer.y = event.original.clientY - this.app.renderer.domElement.offsetTop;
 
-    // Highlight current tile
-    let cell = this.game.pickGridCell(this.pointer);
-    if (this.highlightedCell) {
-      this.highlightedCell.material.emissive = new THREE.Color(0);
+    // If the mouse is over a tile, highlight it
+    let tile = this.game.pickGridTile(this.pointer);
+    if (this.highlightedTile) {
+      this.highlightedTile.material.emissive = new THREE.Color(0);
     }
-    if (cell) {
-      cell.material.emissive = new THREE.Color(0xf0f);
-      this.highlightedCell = cell;
+    this.highlightedTile = tile;
+    if (this.highlightedTile) {
+      this.highlightedTile.material.emissive = new THREE.Color(0xf0f);
     }
 
   },
@@ -36,12 +36,11 @@ STATES.Main = {
   },
 
   pointerdown(event) {
-    let coords = this.game.pickGridCell(this.pointer);
-    if (coords) {
-      let [x,y] = coords;
+    if (this.highlightedTile) {
+      let [x,y] = this.highlightedTile.coords;
       console.log(`Picking grid cell (${x},${y})`);
 
-      this.gameController.pickUpThingFromXY(x,y);
+      this.gameController.clickAt(x,y);
       console.log('Thing held: ', this.gameController.heldThing);
     }
 
