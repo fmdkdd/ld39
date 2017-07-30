@@ -5,6 +5,7 @@ class GameController {
     if (!app) throw new Error('App is undefined');
     this.app = app;
     this.game = new Game(this.app);
+    this.inventoryView = new InventoryView(this.app);
     this.heldThing = null;
     this.currentLevel = 0;
   }
@@ -16,6 +17,7 @@ class GameController {
     this.level = new Level(LEVELS[num]);
     this.currentLevel = num;
     this.game.loadLevel(this.level);
+    this.inventoryView.loadLevel(this.level);
   }
 
   // Take generator from inventory and put it in the currently held slot
@@ -83,6 +85,7 @@ class GameController {
   pointermove(pointer) {
 
     this.game.updatePicking(pointer, this.level.hasNight);
+    this.inventoryView.updatePicking(pointer, this.level.hasNight);
 
     let tile = this.game.pickGridTile();
 
@@ -106,7 +109,7 @@ class GameController {
       this.clickAt(x,y);
     }
 
-    const item = this.game.pickInventoryItem();
+    const item = this.inventoryView.pickInventoryItem();
     if (item && item.available) {
       this.pickUpFromInventory(item);
     }
@@ -125,6 +128,7 @@ class GameController {
         thing.render(dt);
     }
 
+    this.inventoryView.render(dt);
     this.game.render(dt);
 
     let width = this.app.width;
@@ -151,10 +155,11 @@ class GameController {
 
     // Day view
     this.app.renderer.setViewport(0, 0, width, height);
-		this.app.renderer.setScissor(0, 0, width, height);
-		this.app.renderer.setScissorTest(true);
-		this.app.renderer.setClearColor(DAY_CLEARCOLOR);
+    this.app.renderer.setScissor(0, 0, width, height);
+    this.app.renderer.setScissorTest(true);
+    this.app.renderer.setClearColor(DAY_CLEARCOLOR, 1);
 
+    this.app.renderer.clear();
     this.app.renderer.render(this.game.scene, this.game.camera);
 
     if (this.level.hasNight) {
@@ -162,10 +167,20 @@ class GameController {
       this.app.renderer.setViewport(width, 0, width, this.app.height);
       this.app.renderer.setScissor(width, 0, width, this.app.height);
       this.app.renderer.setScissorTest(true);
-      this.app.renderer.setClearColor(NIGHT_CLEARCOLOR);
+      this.app.renderer.setClearColor(NIGHT_CLEARCOLOR, 1);
 
+      this.app.renderer.clear();
       this.app.renderer.render(this.game.scene, this.game.camera);
     }
+
+    // Inventory
+
+    this.inventoryView.render(dt);
+
+    this.app.renderer.setViewport(0, 0, this.app.width, this.app.height);
+    this.app.renderer.setScissorTest(false);
+    this.app.renderer.setClearColor(0x000000, 0);
+    this.app.renderer.render(this.inventoryView.scene, this.inventoryView.camera);
   }
 
 }

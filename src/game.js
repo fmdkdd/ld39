@@ -50,8 +50,6 @@ const TILE_COLOR_HOVER_ALPHA = 0.7;
 const DAY_CLEARCOLOR = 0x6dc2ca;
 const NIGHT_CLEARCOLOR = 0x00476e;
 
-const INVENTORY_ITEM_SCALE = 0.05;
-
 const ModelTypes = {
   Terrain: 0,
 };
@@ -121,28 +119,6 @@ class Game
       }
     });
 
-    document.addEventListener('item picked from inventory', ev => {
-      let item = ev.detail.item;
-      if (item.model) {
-        //item.model.scale.set(INVENTORY_ITEM_SCALE * 0.7, INVENTORY_ITEM_SCALE * 0.7, INVENTORY_ITEM_SCALE * 0.7);
-        item.model.traverse(c => {
-          c.material.color.setHex(0x888888);
-          c.material.vertexColors = THREE.NoColors;
-        });
-      }
-    });
-
-    document.addEventListener('item put in inventory', ev => {
-      let item = ev.detail.item;
-      if (item.model) {
-        //item.model.scale.set(INVENTORY_ITEM_SCALE * 0.7, INVENTORY_ITEM_SCALE * 0.7, INVENTORY_ITEM_SCALE * 0.7);
-        item.model.traverse(c => {
-          c.material.color.setHex(0xFFFFFF);
-          c.material.vertexColors = THREE.VertexColors;
-        });
-      }
-    });
-
     document.addEventListener('thing rotated', ev => {
       let {thing} = ev.detail;
       thing.model.rotation.y = thing.rotationAsRadian();
@@ -183,18 +159,6 @@ class Game
 
         this.terrain.push(tile);
       }
-
-    // Inventory
-    level.inventory.forEach((item, i) =>
-    {
-      const model = loadModel(THING_MODELS[item.type.name]);
-      model.scale.set(INVENTORY_ITEM_SCALE, INVENTORY_ITEM_SCALE, INVENTORY_ITEM_SCALE);
-      model.position.set(-0.75,   0.1 * i, -1);
-      model.inventory = true;
-      model.item = item;
-      item.model = model;
-      this.camera.add(model);
-    });
   }
 
   putNewThing(thing, pos)
@@ -253,13 +217,8 @@ class Game
 
     for (let inter of intersections)
     {
-      // Inventory item
-      if (!this.pickingResult.inventoryItem && getInventoryItem(inter.object))
-      {
-        this.pickingResult.inventoryItem = getInventoryItem(inter.object);
-      }
       // Generator
-      else if (!this.pickingResult.generator && getGenerator(inter.object))
+      if (!this.pickingResult.generator && getGenerator(inter.object))
       {
         this.pickingResult.generator = getGenerator(inter.object);
       }
@@ -273,10 +232,6 @@ class Game
 
   pickGridTile() {
     return this.pickingResult.tile;
-  }
-
-  pickInventoryItem() {
-    return this.pickingResult.inventoryItem;
   }
 
   pickGenerator() {

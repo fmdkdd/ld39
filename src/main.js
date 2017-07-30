@@ -3,7 +3,7 @@ let STATES = {};
 STATES.Main = {
   enter() {
     this.gameController = new GameController(this.app);
-    this.gameController.loadLevel(1);
+    this.gameController.loadLevel(3);
     this.pointer = {x:0, y:0};
   },
 
@@ -71,8 +71,9 @@ window.addEventListener('DOMContentLoaded', function main() {
         // Init WebGL renderer
         this.renderer = new THREE.WebGLRenderer({
           antialias: this.smoothing,
-          alpha: true,
+          alpha: true
         });
+        this.renderer.autoClear = false;
         this.renderer.setClearColor(DAY_CLEARCOLOR);
         this.renderer.shadowMap.enabled = true;
         this.renderer.setSize(this.width, this.height, false);
