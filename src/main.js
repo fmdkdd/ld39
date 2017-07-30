@@ -3,9 +3,8 @@ let STATES = {};
 STATES.Main = {
   enter() {
     this.game = new Game(this.app, 1);
-    this.gameController = new GameController(this.game);
+    this.game.gameController.loadLevel(1);
     this.pointer = {x:0, y:0};
-    this.highlightedTile = null;
   },
 
   render(dt) {
@@ -22,19 +21,8 @@ STATES.Main = {
     this.game.pointermove(this.pointer);
   },
 
-  pointerup(event) {
-    this.game.pointerup(event);
-  },
-
   pointerdown(event) {
-    if (this.highlightedTile) {
-      let [x,y] = this.highlightedTile.coords;
-      console.log(`Picking grid cell (${x},${y})`);
-
-      this.gameController.clickAt(x,y);
-      console.log('Thing held: ', this.gameController.heldThing);
-    }
-
+    this.game.pointerdown(event);
   },
 };
 

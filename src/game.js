@@ -56,6 +56,8 @@ class Game
   {
     this.app = app;
 
+    this.gameController = new GameController(this);
+
     this.scene = new THREE.Scene();
     this.raycaster = new THREE.Raycaster();
 
@@ -71,7 +73,10 @@ class Game
 
     this.dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
     this.dirLight.position.set(4, 3, 4);
+    this.dirLight.castShadow = true;
     this.scene.add(this.dirLight);
+    // Lighter shadows:
+    // https://stackoverflow.com/questions/40938238/shadow-darkness-in-threejs-and-object-opacity
 
     document.addEventListener('level put thing', ev => {
       let {thing, pos} = ev.detail;
@@ -120,6 +125,7 @@ class Game
           -this.terrainSize[1]/2 + (z + 0.5) * TILE_SIZE);
 
         tile.isTile = true;
+        tile.coords = [x, z];
         tile.receiveShadow = true;
         this.scene.add(tile);
         this.terrain.push(tile);
@@ -169,17 +175,6 @@ class Game
       thing.model = model;
       model.thing = thing;
     }
-
-    const ambientLight = new THREE.AmbientLight(0x404040);
-    this.scene.add(ambientLight);
-
-    const dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
-    dirLight.position.set(4, 3, 4);
-    //dirLight.target = this.terrain;
-    dirLight.castShadow = true;
-    this.scene.add(dirLight);
-    // Lighter shadows:
-    // https://stackoverflow.com/questions/40938238/shadow-darkness-in-threejs-and-object-opacity
 
     // Inventory
     this.level.inventory.forEach((item, i) =>
@@ -262,6 +257,17 @@ class Game
 
         return;
       }
+    }
+  }
+
+  pointerdown()
+  {
+    if (this.hoveredTile) {
+      let [x,y] = this.hoveredTile.coords;
+      console.log(`Picking grid cell (${x},${y})`);
+
+      this.gameController.clickAt(x,y);
+      console.log('Thing held: ', this.gameController.heldThing);
     }
   }
 
