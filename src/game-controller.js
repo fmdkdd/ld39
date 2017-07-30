@@ -10,6 +10,7 @@ class GameController {
 
     document.addEventListener('level put thing', ev => this.validate());
     document.addEventListener('level removed thing', ev => this.validate());
+    document.addEventListener('thing rotated', ev => this.validate());
   }
 
   loadLevel(num) {
@@ -25,13 +26,20 @@ class GameController {
     if (this.level) {
       let result = this.level.validate();
 
-      // TODO: color houses in green if powered, cell in red if overloaded
+      // Clear previous highlights
+      for (let tile of this.game.terrain) {
+        tile.material.emissive.setHex(0);
+      }
+
+      // TODO: visual feedback could be that houses themselves are dark at
+      // first, then they light up when they are powered.
       for (let m of result.mispowered) {
+        // Get tile below consumer
         let [x,y] = this.level.getThingXY(m.consumer);
-        console.log(m.consumer.model.material.color.setHex(0x00ff00));
         let tile = this.game.getTileAt(x,y);
 
-        //this.game.updateTileColor(tile, false, true);
+        // Paint it red
+        tile.material.emissive.setHex(0x880000);
       }
     }
   }
