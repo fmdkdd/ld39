@@ -45,6 +45,11 @@ const ModelTypes = {
   NextLevelButton: 1,
 };
 
+const ModelScales = {
+  WindTurbine: 0.625,
+  Battery: 0.5,
+}
+
 let THING_MODELS;
 
 class Game
@@ -235,6 +240,10 @@ class Game
           thing instanceof SolarPanel) {
         model.rotation.y = thing.rotationAsRadian();
       }
+    }
+
+    if (ModelScales[thing.constructor.name]) {
+      model.scale.multiplyScalar(ModelScales[thing.constructor.name]);
     }
 
     thing.model = model;
