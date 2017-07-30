@@ -56,8 +56,6 @@ class Game
   {
     this.app = app;
 
-    this.gameController = new GameController(this);
-
     this.scene = new THREE.Scene();
     this.raycaster = new THREE.Raycaster();
 
@@ -95,17 +93,16 @@ class Game
     });
   }
 
-  loadLevel(levelNum) {
+  unloadLevel(level) {
     // Remove all objects from the previous level, if any
-    if (this.level) {
-      for (let [thing,_] of this.level.things) {
-        this.scene.remove(thing.model);
-        this.terrain.forEach(t => this.scene.remove(t));
-      }
+    for (let [thing,_] of level.things) {
+      this.scene.remove(thing.model);
+      this.terrain.forEach(t => this.scene.remove(t));
     }
+  }
 
-    this.level = new Level(LEVELS[levelNum]);
-    this.tiles = [this.level.grid.width, this.level.grid.height];
+  loadLevel(level) {
+    this.tiles = [level.grid.width, level.grid.height];
     this.terrainSize = [this.tiles[0] * TILE_SIZE, this.tiles[1] * TILE_SIZE];
 
     this.terrain = [];
@@ -124,7 +121,7 @@ class Game
           -0.025,
           -this.terrainSize[1]/2 + (z + 0.5) * TILE_SIZE);
 
-        tile.isTile = true;
+        tile.modelType = ModelTypes.Terrain;
         tile.coords = [x, z];
         this.updateTileColor(tile, false);
         tile.receiveShadow = true;
@@ -144,7 +141,7 @@ class Game
       Obstacle: this.app.data.rock
     };
 
-    for (let pair of this.level.things)
+    for (let pair of level.things)
     {
       const thing = pair[0];
       const pos = pair[1];
@@ -184,7 +181,7 @@ class Game
     }
 
     // Inventory
-    this.level.inventory.forEach((item, i) =>
+    level.inventory.forEach((item, i) =>
     {
       const model = loadModel(THING_MODELS[item.type.name]);
       model.scale.set(0.05, 0.05, 0.05);
@@ -196,10 +193,10 @@ class Game
 
   render(dt)
   {
-    if (this.level) {
-      for (let pair of this.level.things)
-        pair[0].render(dt);
-    }
+    // if (this.level) {
+    //   for (let pair of this.level.things)
+    //     pair[0].render(dt);
+    // }
   }
 
   // Pick and return the grid tile at point coordinates (in canvas space), or
@@ -213,12 +210,10 @@ class Game
     this.raycaster.setFromCamera(cursor, this.camera);
     const intersections = this.raycaster.intersectObjects(this.scene.children, true);
 
-    for (let inter of intersections)
-    {
+    for (let inter of intersections) {
       if (inter.object.modelType === ModelTypes.Terrain) {
         return inter.object;
       }
-        //return this.worldToGrid(inter.point.x, inter.point.z);
     }
 
     return null;
@@ -233,65 +228,6 @@ class Game
       tile.material.color.setHex(TILE_COLOR_HOVER);
     else
       tile.material.color.setHex(tile.coords[0] ^ tile.coords[1] ? TILE_COLOR_1 : TILE_COLOR_2);
-  }
-
-  pointermove(event)
-  {
-    // [canvas width, canvas height] -> [-1, 1]
-    const cursor = {
-      x: (event.x / this.app.renderer.domElement.clientWidth) * 2 - 1,
-      y: -((event.y / this.app.renderer.domElement.clientHeight) * 2 - 1)
-    };
-    this.raycaster.setFromCamera(cursor, this.camera);
-    const intersections = this.raycaster.intersectObjects(this.scene.children, true);
-
-    for (let inter of intersections)
-    {
-      // Inventory item
-      if (isInInventory(inter.object))
-      {
-        console.log('inventory');
-        return;
-      }
-      // Built generator
-      else if (isGenerator(inter.object))
-      {
-        console.log('generator');
-        return;
-      }
-      // Empty tile
-      else if (inter.object.isTile)
-      {
-        const gridPos = this.worldToGrid(inter.point.x, inter.point.z);
-        console.log('empty tile', gridPos);
-
-        // Restore the color of the previously hovered tile
-        this.updateTileColor(this.hoveredTile, false);
-
-        // Highlight the hovered tile
-        this.hoveredTile = inter.object;
-        this.updateTileColor(this.hoveredTile, true);
-
-        return;
-      }
-    }
-
-    // Intersecte nothing
-    console.log('nothing');
-
-    this.updateTileColor(this.hoveredTile, false);
-    this.hoveredTile = null;
-  }
-
-  pointerdown()
-  {
-    if (this.hoveredTile) {
-      let [x,y] = this.hoveredTile.coords;
-      console.log(`Picking grid cell (${x},${y})`);
-
-      this.gameController.clickAt(x,y);
-      console.log('Thing held: ', this.gameController.heldThing);
-    }
   }
 
   gridToWorld(x, y)

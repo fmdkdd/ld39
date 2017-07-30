@@ -2,8 +2,9 @@ let STATES = {};
 
 STATES.Main = {
   enter() {
-    this.game = new Game(this.app, 1);
-    this.game.gameController.loadLevel(1);
+    this.game = new Game(this.app);
+    this.gameController = new GameController(this.game);
+    this.gameController.loadLevel(1);
     this.pointer = {x:0, y:0};
   },
 
@@ -18,11 +19,11 @@ STATES.Main = {
     this.pointer.x = event.original.clientX - this.app.renderer.domElement.offsetLeft;
     this.pointer.y = event.original.clientY - this.app.renderer.domElement.offsetTop;
 
-    this.game.pointermove(this.pointer);
+    this.gameController.pointermove(this.pointer);
   },
 
   pointerdown(event) {
-    this.game.pointerdown(event);
+    this.gameController.pointerdown(event);
   },
 };
 
