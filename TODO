@@ -9,7 +9,6 @@
 
 
 @fmdkdd:
-- transition to next level
 - add more levels
 - sound effects
 - background music
@@ -19,9 +18,10 @@ unassigned:
 - show heldThing somewhere (under cursor?)
 - adjust camera to see whole levels (maybe add camera data in level)
 - title screen?
-- visual polish
+- visual polish (transitions)
 
 
 
 done:
 - level validation
+- can go to next level
