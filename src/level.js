@@ -126,6 +126,7 @@ class Level {
     if (!this.hasThing(thing)) throw new Error(`Thing ${thing.name} not in level`);
     let [x,y] = this.things.get(thing);
     this.grid.putAt(null, x,y);
+    this.things.delete(thing);
 
     dispatch('level removed thing', {thing, pos: [x,y]});
   }
