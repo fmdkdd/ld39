@@ -73,7 +73,7 @@ class GameController {
 
   pointermove(pointer) {
 
-    let tile = this.game.pickGridTile(pointer);
+    let tile = this.game.pickGridTile(pointer, this.level.hasNight);
 
     if (tile) {
       // Restore the color of the previously hovered tile
@@ -107,21 +107,45 @@ class GameController {
 
     this.game.render(dt);
 
+    let width = this.app.width;
+    let height = this.app.height;
+    let frustrum = 1;
+
+    if (this.level.hasNight) {
+      width /= 2;
+      frustrum = 2;
+    }
+
+    let aspect = width / height;
+
+    let left = -frustrum * aspect / 2;
+    let right = frustrum * aspect / 2;
+    let top = frustrum / 2;
+    let bottom = -frustrum / 2;
+
+    this.game.camera.left = left;
+    this.game.camera.right = right;
+    this.game.camera.top = top;
+    this.game.camera.bottom = bottom;
+    this.game.camera.updateProjectionMatrix();
+
     // Day view
-    this.app.renderer.setViewport(0, 0, 160, 180);
-		this.app.renderer.setScissor(0, 0, 160, 180);
+    this.app.renderer.setViewport(0, 0, width, height);
+		this.app.renderer.setScissor(0, 0, width, height);
 		this.app.renderer.setScissorTest(true);
 		this.app.renderer.setClearColor(DAY_CLEARCOLOR);
 
     this.app.renderer.render(this.game.scene, this.game.camera);
 
-    // Night view
-    this.app.renderer.setViewport(160, 0, 160, 180);
-		this.app.renderer.setScissor(160, 0, 160, 180);
-		this.app.renderer.setScissorTest(true);
-		this.app.renderer.setClearColor(NIGHT_CLEARCOLOR);
+    if (this.level.hasNight) {
+      // Night view
+      this.app.renderer.setViewport(width, 0, width, this.app.height);
+      this.app.renderer.setScissor(width, 0, width, this.app.height);
+      this.app.renderer.setScissorTest(true);
+      this.app.renderer.setClearColor(NIGHT_CLEARCOLOR);
 
-    this.app.renderer.render(this.game.scene, this.game.camera);
+      this.app.renderer.render(this.game.scene, this.game.camera);
+    }
   }
 
 }

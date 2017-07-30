@@ -69,6 +69,8 @@ class Level {
         }
       }
     }
+
+    this.hasNight = !!data.hasNight;
   }
 
   putThingAt(thing, x,y) {

@@ -21,4 +21,10 @@ const LEVELS = [
           ..21.
           .....`,
   },
+
+  {
+    generators: 'SSB',
+    hasNight: true,
+    map: `....1.2...`,
+  },
 ];

@@ -200,10 +200,15 @@ class Game
 
   // Pick and return the grid tile at point coordinates (in canvas space), or
   // null
-  pickGridTile(point) {
+  pickGridTile(point, night) {
+    let width = this.app.renderer.domElement.clientWidth;
+    if (night) {
+      width /= 2;
+    }
+
     // [canvas width, canvas height] -> [-1, 1]
     const cursor = {
-      x: (point.x / this.app.renderer.domElement.clientWidth) * 2 - 1,
+      x: (point.x / width) * 2 - 1,
       y: -((point.y / this.app.renderer.domElement.clientHeight) * 2 - 1)
     };
     this.raycaster.setFromCamera(cursor, this.camera);
