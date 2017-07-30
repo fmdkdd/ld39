@@ -3,7 +3,7 @@ let STATES = {};
 STATES.Main = {
   enter() {
     this.game = new Game(this.app, 1);
-    this.gameController = new GameController(this.game.level);
+    this.gameController = new GameController(this.game);
     this.pointer = {x:0, y:0};
   },
 

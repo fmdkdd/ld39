@@ -26,7 +26,7 @@ const TILE_SIZE = 0.2;
 
 class Game
 {
-  constructor(app, levelNum)
+  constructor(app)
   {
     this.app = app;
 
@@ -40,22 +40,37 @@ class Game
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
     this.scene.add(this.camera);
 
+    this.ambientLight = new THREE.AmbientLight(0x404040);
+    this.scene.add(this.ambientLight);
+
+    this.dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
+    this.dirLight.position.set(4, 3, 4);
+    this.scene.add(this.dirLight);
+  }
+
+  loadLevel(levelNum) {
+    // Remove all objects from the previous level, if any
+    if (this.level) {
+      for (let [thing,_] of this.level.things) {
+        this.scene.remove(thing.model);
+        this.scene.remove(this.terrain);
+      }
+    }
+
     this.level = new Level(LEVELS[levelNum]);
     this.tiles = [this.level.grid.width, this.level.grid.height];
     this.terrainSize = [this.tiles[0] * TILE_SIZE, this.tiles[1] * TILE_SIZE];
 
-    // Terrain centered on the origin
+    // Build terrain centered on the origin
     this.terrain = new THREE.Mesh(
       new THREE.BoxGeometry(this.terrainSize[0], .05, this.terrainSize[1]),
       new THREE.MeshLambertMaterial({ color: 0x6daa2c }));
     this.scene.add(this.terrain);
+    this.dirLight.target = this.terrain;
 
     // Populate the grid
-    for (let pair of this.level.things)
+    for (let [thing,pos] of this.level.things)
     {
-      const thing = pair[0];
-      const pos = pair[1];
-
       const model = loadModel(this.app.data.windturbine);
       model.scale.set(TILE_SIZE*0.5, TILE_SIZE*0.5,TILE_SIZE*0.5);
 
@@ -67,19 +82,14 @@ class Game
       model.thing = thing;
     }
 
-    const ambientLight = new THREE.AmbientLight(0x404040);
-    this.scene.add(ambientLight);
-
-    const dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
-    dirLight.position.set(4, 3, 4);
-    dirLight.target = this.terrain;
-    this.scene.add(dirLight);
   }
 
   render(dt)
   {
-    for (let pair of this.level.things)
-      pair[0].render(dt);
+    if (this.level) {
+      for (let pair of this.level.things)
+        pair[0].render(dt);
+    }
   }
 
   // Pick and return the grid cell at point coordinates (in canvas space), or
