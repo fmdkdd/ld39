@@ -228,6 +228,7 @@ class Game
 
       const modelPos = this.gridToWorld(pos[0], pos[1]);
       model.position.set(modelPos[0], 0, modelPos[1]);
+      model.rotation.y = thing.rotationAsRadian();
       this.scene.add(model);
     }
 

@@ -36,7 +36,7 @@ class Generator extends Thing {
 
   constructor(name) {
     super(name);
-    this.rotation = Generator.Rotation.BOTTOM;
+    this.rotation = Generator.Rotation.TOP;
   }
 
   rotate() {
@@ -48,10 +48,10 @@ class Generator extends Thing {
   rotationAsRadian() {
     let r = this.rotation;
     switch (r) {
-    case Generator.Rotation.TOP: return Math.PI/2;
-    case Generator.Rotation.RIGHT: return 0;
-    case Generator.Rotation.BOTTOM: return -Math.PI/2;
-    case Generator.Rotation.LEFT: return Math.PI;
+    case Generator.Rotation.TOP: return 0;
+    case Generator.Rotation.RIGHT: return Math.PI/2;
+    case Generator.Rotation.BOTTOM: return Math.PI;
+    case Generator.Rotation.LEFT: return 3*Math.PI/2;
     default:
       throw new Error("Non-exhaustive switch");
     }
@@ -163,6 +163,8 @@ class SolarPanel extends Generator {
 
   constructor() {
     super(`solarpanel-${Thing.ID++}`);
+
+    this.rotation = Generator.Rotation.BOTTOM;
   }
 
   // Return a list of all the cells that may be powered by this generator
@@ -200,7 +202,8 @@ class SolarPanel extends Generator {
 
   rotate() {
     // Only two variations for solar panels
-    this.rotation = (this.rotation + 1) % 2;
+    this.rotation = this.rotation === Generator.Rotation.BOTTOM ?
+      Generator.Rotation.RIGHT : Generator.Rotation.BOTTOM;
 
     dispatch('thing rotated', {thing: this});
   }
