@@ -117,7 +117,7 @@ class Game
       {
         const tile = new THREE.Mesh(
           tileGeometry,
-          new THREE.MeshLambertMaterial({ color: x ^ z ? TILE_COLOR_1 : TILE_COLOR_2 }));
+          new THREE.MeshLambertMaterial());
 
         tile.position.set(
           -this.terrainSize[0]/2 + (x + 0.5) * TILE_SIZE,
@@ -126,8 +126,10 @@ class Game
 
         tile.isTile = true;
         tile.coords = [x, z];
+        this.updateTileColor(tile, false);
         tile.receiveShadow = true;
         this.scene.add(tile);
+
         this.terrain.push(tile);
       }
 
@@ -222,6 +224,17 @@ class Game
     return null;
   }
 
+  updateTileColor(tile, highlight)
+  {
+    if (!tile)
+      return;
+
+    if (highlight)
+      tile.material.color.setHex(TILE_COLOR_HOVER);
+    else
+      tile.material.color.setHex(tile.coords[0] ^ tile.coords[1] ? TILE_COLOR_1 : TILE_COLOR_2);
+  }
+
   pointermove(event)
   {
     // [canvas width, canvas height] -> [-1, 1]
@@ -253,16 +266,21 @@ class Game
         console.log('empty tile', gridPos);
 
         // Restore the color of the previously hovered tile
-        if (this.hoveredTile)
-          this.hoveredTile.material.color.setHex(gridPos[0] ^ gridPos[1] ? TILE_COLOR_1 : TILE_COLOR_2);
+        this.updateTileColor(this.hoveredTile, false);
 
-        // Highlight the new one
+        // Highlight the hovered tile
         this.hoveredTile = inter.object;
-        this.hoveredTile.material.color.setHex(TILE_COLOR_HOVER);
+        this.updateTileColor(this.hoveredTile, true);
 
         return;
       }
     }
+
+    // Intersecte nothing
+    console.log('nothing');
+
+    this.updateTileColor(this.hoveredTile, false);
+    this.hoveredTile = null;
   }
 
   pointerdown()
