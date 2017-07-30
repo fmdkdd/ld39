@@ -76,6 +76,8 @@ class GameController {
     if (this.heldThing) {
       this.level.putThingAt(this.heldThing, x,y);
       this.heldThing = null;
+
+      this.game.putParticleCloud(x, y);
     }
   }
 
@@ -93,6 +95,9 @@ class GameController {
       this.level.removeThing(thing);
     }
     this.heldThing = thing;
+
+    // keep the model visible even though it has been removed from the logic grid
+    this.heldThing.model.visible = true;
   }
 
   // Take generator at (x,y) in level and put it in the currently held slot
@@ -168,6 +173,10 @@ class GameController {
     } else {
       this.game.nextLevelButton.material.color.setHex(0xffffff);
     }
+
+    // If we are holding something, keep it under the cursor
+    if (this.heldThing)
+      this.game.moveToCursor(this.heldThing, pointer);
   }
 
   leftclick() {

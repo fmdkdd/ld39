@@ -38,6 +38,8 @@ const TILE_COLOR_HOVER_ALPHA = 0.7;
 const DAY_CLEARCOLOR = 0x6dc2ca;
 const NIGHT_CLEARCOLOR = 0x00476e;
 
+const HELD_THING_VERTICAL_OFFSET = 0.05;
+
 const ModelTypes = {
   Terrain: 0,
   NextLevelButton: 1,
@@ -232,11 +234,76 @@ class Game
     model.thing = thing;
   }
 
-  getTileAt(x,y) {
+  moveToCursor(thing, pointer)
+  {
+    const intersections = this.raycast(this.eventToCameraPos(pointer));
+    if (intersections.length)
+    {
+      const hit = intersections[0].point;
+      const newPos = this.snapWorld(hit.x, hit.z);
+      thing.model.position.set(newPos[0], HELD_THING_VERTICAL_OFFSET, newPos[1]);
+    }
+  }
+
+  putParticleCloud(x, y)
+  {
+    if (!this.particles)
+    {
+      this.particles = new SPE.Group({
+        texture: {
+          value: THREE.ImageUtils.loadTexture('data/dust.png')
+        },
+        maxParticleCount: 100
+      });
+
+      this.particles.mesh.position.set(0, 0, 0);
+      this.scene.add(this.particles.mesh);
+    }
+
+    const pos = this.gridToWorld(x, y);
+
+    const emitter = new SPE.Emitter({
+      maxAge: {
+        value: 1
+      },
+      position: {
+        value: new THREE.Vector3(pos[0], 0, pos[1]),
+        spread: new THREE.Vector3(0.05, 0, 0.05)
+      },
+      velocity: {
+        value: new THREE.Vector3(0, 0.05, 0),
+        spread: new THREE.Vector3(0.25, 0.02, 0.25)
+      },
+      acceleration: {
+        value: new THREE.Vector3(0, -0.025, 0)
+      },
+      color: {
+        value: [new THREE.Color('yellow'), new THREE.Color('white')]
+      },
+      opacity: {
+        value: [0.8, 0]
+      },
+      size: {
+        value: [0.12, 0.06]
+      },
+      particleCount: 5,
+      duration: 0.25
+    });
+
+    this.particles.addEmitter(emitter);
+
+    //setTimeout(() => this.particles.removeEmitter(emitter), 10000);
+  }
+
+  getTileAt(x, y) {
     return this.terrain[y * this.tiles[0] + x];
   }
 
   render(dt) {
+
+    // Update live particle emitter
+    if (this.particles)
+      this.particles.tick(dt);
   }
 
   updatePicking(point, night) {
@@ -343,5 +410,11 @@ class Game
       Math.floor((x + this.terrainSize[0] / 2) / this.terrainSize[0] * this.tiles[0]),
       Math.floor((y + this.terrainSize[1] / 2) / this.terrainSize[1] * this.tiles[1])
     ];
+  }
+
+  snapWorld(x, y)
+  {
+    const gridPos = this.worldToGrid(x, y);
+    return this.gridToWorld(gridPos[0], gridPos[1]);
   }
 }
