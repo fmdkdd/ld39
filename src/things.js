@@ -124,8 +124,8 @@ class WindTurbine extends Generator {
   // Return a list of all the cells that may be powered by this generator
   // (positioned at [ox,oy]), as [x,y] coordinates
   getPoweredCells(ox,oy, night) {
-    // TODO: night
-    const length = 5;
+
+    let length = night ? 3 : 5;
 
     // Cast a line from the origin
     let cells = Pattern.straightLineFrom(ox,oy, this.rotation, length);
@@ -138,11 +138,11 @@ class WindTurbine extends Generator {
   }
 
   // Distribute power in a straight line starting from the turbine position
-  distributePower(level, counters) {
+  distributePower(level, counters, night) {
     let [ox,oy] = level.getThingXY(this);
 
     // If there is a consumer in a powered cell, add to its counter
-    this.getPoweredCells(ox,oy).forEach(([x,y]) => {
+    this.getPoweredCells(ox,oy,night).forEach(([x,y]) => {
       if (level.inBounds(x,y)) {
         let thing = level.getThingAt(x, y);
         if (thing instanceof Consumer) {
@@ -167,19 +167,26 @@ class SolarPanel extends Generator {
   // Return a list of all the cells that may be powered by this generator
   // (positioned at [ox,oy]), as [x,y] coordinates
   getPoweredCells(ox,oy, night) {
-    let cells = Pattern.crossCenteredAt(ox, oy);
+    let cells = Pattern.crossCenteredAt(ox,oy);
 
-    // TODO: night
+    // At night, remove two opposite cells, depending on rotation
+    if (night) {
+      if (this.rotation % 2) {
+        cells.splice(1,2);
+      } else {
+        cells.splice(3,2);
+      }
+    }
 
     return cells;
   }
 
   // Distribute power in a straight line starting from the turbine position
-  distributePower(level, counters) {
+  distributePower(level, counters, night) {
     let [ox,oy] = level.getThingXY(this);
 
     // If there is a consumer in a powered cell, add to its counter
-    this.getPoweredCells(ox,oy).forEach(([x,y]) => {
+    this.getPoweredCells(ox,oy,night).forEach(([x,y]) => {
       if (level.inBounds(x,y)) {
         let thing = level.getThingAt(x, y);
         if (thing instanceof Consumer) {

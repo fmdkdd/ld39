@@ -2,8 +2,8 @@ let STATES = {};
 
 STATES.Main = {
   enter() {
-    this.gameController = new GameController(this.app);
-    this.gameController.loadLevel(3);
+    window.G = this.gameController = new GameController(this.app);
+    this.gameController.loadLevel(0);
     this.pointer = {x:0, y:0};
   },
 

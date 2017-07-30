@@ -126,7 +126,7 @@ class Level {
     for (let th of this.things.keys()) {
       if (th instanceof Generator) {
         // Let the generator add to the power counters
-        th.distributePower(this, counters);
+        th.distributePower(this, counters, this.hasNight);
       }
     }
 
