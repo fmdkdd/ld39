@@ -36,11 +36,25 @@ class Generator extends Thing {
 
   constructor(name) {
     super(name);
-    this.rotation = Generator.Rotation.TOP;
+    this.rotation = Generator.Rotation.BOTTOM;
   }
 
   rotate() {
     this.rotation = (this.rotation + 1) % 4;
+
+    dispatch('thing rotated', {thing: this});
+  }
+
+  rotationAsRadian() {
+    let r = this.rotation;
+    switch (r) {
+    case Generator.Rotation.TOP: return Math.PI/2;
+    case Generator.Rotation.RIGHT: return 0;
+    case Generator.Rotation.BOTTOM: return -Math.PI/2;
+    case Generator.Rotation.LEFT: return Math.PI;
+    default:
+      throw new Error("Non-exhaustive switch");
+    }
   }
 
 }

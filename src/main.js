@@ -21,7 +21,11 @@ STATES.Main = {
   },
 
   pointerdown(event) {
-    this.gameController.pointerdown(this.pointer);
+    if (event.button == 'left') {
+      this.gameController.leftclick();
+    } else if (event.button == 'right') {
+      this.gameController.rightclick();
+    }
   },
 };
 

@@ -61,6 +61,15 @@ class GameController {
     }
   }
 
+  rotateThingAt(x,y) {
+    let thing = this.level.getThingAt(x,y);
+
+    if (thing instanceof WindTurbine ||
+        thing instanceof SolarPanel) {
+      thing.rotate();
+    }
+  }
+
   clickAt(x,y) {
     let thing = this.level.getThingAt(x,y);
 
@@ -91,18 +100,22 @@ class GameController {
     }
   }
 
-  pointerdown() {
+  leftclick() {
     if (this.hoveredTile) {
       let [x,y] = this.hoveredTile.coords;
-      console.log(`Picking grid cell (${x},${y})`);
-
       this.clickAt(x,y);
-      console.log('Thing held: ', this.heldThing);
     }
 
     const item = this.game.pickInventoryItem();
     if (item && item.available) {
       this.pickUpFromInventory(item);
+    }
+  }
+
+  rightclick() {
+    if (this.hoveredTile) {
+      let [x,y] = this.hoveredTile.coords;
+      this.rotateThingAt(x,y);
     }
   }
 

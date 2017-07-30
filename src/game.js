@@ -142,6 +142,11 @@ class Game
         });
       }
     });
+
+    document.addEventListener('thing rotated', ev => {
+      let {thing} = ev.detail;
+      thing.model.rotation.y = thing.rotationAsRadian();
+    });
   }
 
   unloadLevel(level) {
