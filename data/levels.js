@@ -1,7 +1,17 @@
 const LEVELS = [
+
   {
     generators: 'WW',
     map: `W...1.2..W`,
+  },
+
+  {
+    generators: '',
+    map: `W....
+          .11..
+          .1.1.
+          .....
+          ..S..`,
   },
 
   {
@@ -32,8 +42,21 @@ const LEVELS = [
   },
 
   {
-    generators: 'WWB',
-    hasNight: true,
-    map: `WW..1.2B..`,
+    generators: '',
+    map: `S.....S
+          ..2.1..
+          .1.1.1.
+          ..2.2..
+          W.....W`,
   },
+
+
+  // Night levels
+
+  {
+    generators: 'WB',
+    hasNight: true,
+    map: `W...1.2B..`,
+  },
+
 ];
