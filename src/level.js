@@ -133,6 +133,8 @@ class Level {
   // Mark inventory item as unavailable
   markUnavailable(item) {
     item.available = false;
+
+    dispatch('item picked from inventory', {item});
   }
 
   // Mark the first inventory item that matches thing's type as available
@@ -140,6 +142,8 @@ class Level {
     let item = this.inventory.find(item => item.type == thing.constructor);
     if (!item) throw new Error("Thing is not allowed in the level inventory");
     item.available = true;
+
+    dispatch('item put in inventory', {item});
   }
 
   // Validate this level: try to distribute power from generators to consumers.

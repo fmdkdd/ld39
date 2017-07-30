@@ -101,7 +101,7 @@ class GameController {
     }
 
     const item = this.game.pickInventoryItem();
-    if (item) {
+    if (item && item.available) {
       this.pickUpFromInventory(item);
     }
   }
