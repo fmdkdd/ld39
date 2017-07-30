@@ -67,7 +67,7 @@ class Game
     const aspect = app.width / app.height;
     const frustrum = 1;
     this.camera = new THREE.OrthographicCamera(-frustrum*aspect/2, frustrum*aspect/2, frustrum/2, -frustrum/2, 0.1, 100 );
-    this.camera.position.set(0, 2, 2);
+    this.camera.position.set(.5, 2, 2);
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
     this.scene.add(this.camera);
 
@@ -185,6 +185,10 @@ class Game
     model.thing = thing;
   }
 
+  getTileAt(x,y) {
+    return this.terrain[y * this.tiles[0] + x];
+  }
+
   render(dt) {
   }
 
@@ -229,12 +233,15 @@ class Game
     return this.pickingResult.generator;
   }
 
-  updateTileColor(tile, highlight)
+  updateTileColor(tile, highlight, mispowered)
   {
     if (!tile)
       return;
 
-    if (highlight) {
+    if (mispowered) {
+      tile.material.color.lerp(new THREE.Color(0xff0000), 0.7);
+    }
+    else if (highlight) {
       tile.material.color.lerp(TILE_COLOR_HOVER, TILE_COLOR_HOVER_ALPHA);
     } else {
       tile.material.color.setHex(tile.coords[0] ^ tile.coords[1] ? TILE_COLOR_1 : TILE_COLOR_2);

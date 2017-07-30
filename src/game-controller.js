@@ -7,6 +7,9 @@ class GameController {
     this.game = new Game(this.app);
     this.heldThing = null;
     this.currentLevel = 0;
+
+    document.addEventListener('level put thing', ev => this.validate());
+    document.addEventListener('level removed thing', ev => this.validate());
   }
 
   loadLevel(num) {
@@ -16,6 +19,21 @@ class GameController {
     this.level = new Level(LEVELS[num]);
     this.currentLevel = num;
     this.game.loadLevel(this.level);
+  }
+
+  validate() {
+    if (this.level) {
+      let result = this.level.validate();
+
+      // TODO: color houses in green if powered, cell in red if overloaded
+      for (let m of result.mispowered) {
+        let [x,y] = this.level.getThingXY(m.consumer);
+        console.log(m.consumer.model.material.color.setHex(0x00ff00));
+        let tile = this.game.getTileAt(x,y);
+
+        //this.game.updateTileColor(tile, false, true);
+      }
+    }
   }
 
   // Put the held item at (x,y) in the level.  Do nothing if we have no held item.
@@ -76,6 +94,8 @@ class GameController {
     this.game.updatePicking(pointer, this.level.hasNight);
 
     let tile = this.game.pickGridTile();
+
+    // let thing = this.level.getThingAt(tile);
 
     if (tile) {
       // Restore the color of the previously hovered tile
