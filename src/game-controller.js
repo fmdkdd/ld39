@@ -1,9 +1,10 @@
 // Implements controls bound to the GUI
 class GameController {
 
-  constructor(game) {
-    if (!game) throw new Error('Level is undefined');
-    this.game = game;
+  constructor(app) {
+    if (!app) throw new Error('App is undefined');
+    this.app = app;
+    this.game = new Game(this.app);
     this.heldThing = null;
     this.currentLevel = 0;
   }
@@ -96,6 +97,31 @@ class GameController {
       this.clickAt(x,y);
       console.log('Thing held: ', this.heldThing);
     }
+  }
+
+  render(dt) {
+    if (this.level) {
+      for (let [thing,_] of this.level.things)
+        thing.render(dt);
+    }
+
+    this.game.render(dt);
+
+    // Day view
+    this.app.renderer.setViewport(0, 0, 160, 180);
+		this.app.renderer.setScissor(0, 0, 160, 180);
+		this.app.renderer.setScissorTest(true);
+		this.app.renderer.setClearColor(DAY_CLEARCOLOR);
+
+    this.app.renderer.render(this.game.scene, this.game.camera);
+
+    // Night view
+    this.app.renderer.setViewport(160, 0, 160, 180);
+		this.app.renderer.setScissor(160, 0, 160, 180);
+		this.app.renderer.setScissorTest(true);
+		this.app.renderer.setClearColor(NIGHT_CLEARCOLOR);
+
+    this.app.renderer.render(this.game.scene, this.game.camera);
   }
 
 }

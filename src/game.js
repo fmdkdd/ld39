@@ -45,6 +45,8 @@ const TILE_SIZE = 0.2;
 const TILE_COLOR_1 = 0x6daa2c;
 const TILE_COLOR_2 = 0x79a92b;
 const TILE_COLOR_HOVER = 0x96a82a;
+const DAY_CLEARCOLOR = 0x6dc2ca;
+const NIGHT_CLEARCOLOR = 0x00476e;
 
 const ModelTypes = {
   Terrain: 0,
@@ -58,6 +60,8 @@ class Game
 
     this.scene = new THREE.Scene();
     this.raycaster = new THREE.Raycaster();
+
+    this.views = [];
 
     const aspect = app.width / app.height;
     const frustrum = 1;
@@ -191,12 +195,7 @@ class Game
     });
   }
 
-  render(dt)
-  {
-    // if (this.level) {
-    //   for (let pair of this.level.things)
-    //     pair[0].render(dt);
-    // }
+  render(dt) {
   }
 
   // Pick and return the grid tile at point coordinates (in canvas space), or

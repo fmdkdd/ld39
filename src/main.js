@@ -2,15 +2,13 @@ let STATES = {};
 
 STATES.Main = {
   enter() {
-    this.game = new Game(this.app);
-    this.gameController = new GameController(this.game);
+    this.gameController = new GameController(this.app);
     this.gameController.loadLevel(1);
     this.pointer = {x:0, y:0};
   },
 
   render(dt) {
-    this.game.render(dt);
-    this.app.renderer.render(this.game.scene, this.game.camera);
+    this.gameController.render(dt);
   },
 
   pointermove(event) {
@@ -71,7 +69,7 @@ window.addEventListener('DOMContentLoaded', function main() {
           antialias: this.smoothing,
           alpha: true,
         });
-        this.renderer.setClearColor(0x6dc2ca);
+        this.renderer.setClearColor(DAY_CLEARCOLOR);
         this.renderer.shadowMap.enabled = true;
         this.renderer.setSize(this.width, this.height, false);
         this.renderer.domElement.style.width = this.width * this.scale + 'px';
