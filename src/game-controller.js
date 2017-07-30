@@ -141,7 +141,6 @@ class GameController {
     this.app.renderer.setScissorTest(true);
     this.app.renderer.setClearColor(DAY_CLEARCOLOR, 1);
 
-    this.app.renderer.clear();
     this.app.renderer.render(this.game.scene, this.game.camera);
 
     if (this.level.hasNight) {
@@ -151,7 +150,6 @@ class GameController {
       this.app.renderer.setScissorTest(true);
       this.app.renderer.setClearColor(NIGHT_CLEARCOLOR, 1);
 
-      this.app.renderer.clear();
       this.app.renderer.render(this.game.scene, this.game.camera);
     }
   }

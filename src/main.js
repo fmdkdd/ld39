@@ -73,7 +73,6 @@ window.addEventListener('DOMContentLoaded', function main() {
           antialias: this.smoothing,
           alpha: true
         });
-        this.renderer.autoClear = false;
         this.renderer.setClearColor(DAY_CLEARCOLOR);
         this.renderer.shadowMap.enabled = true;
         this.renderer.setSize(this.width, this.height, false);
