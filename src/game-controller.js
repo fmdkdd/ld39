@@ -23,6 +23,7 @@ class GameController {
     this.level = new Level(LEVELS[num]);
     this.currentLevel = num;
     this.currentLevelSolved = false;
+    this.heldThing = null;
     this.game.loadLevel(this.level);
     this.game.hideNextLevelButton();
   }
