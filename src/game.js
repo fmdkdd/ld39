@@ -82,8 +82,12 @@ class Game
     // Lighter shadows:
     // https://stackoverflow.com/questions/40938238/shadow-darkness-in-threejs-and-object-opacity
 
-    let sprite = new THREE.Sprite();
-    // TODO: add texture with arrow '->'
+    let texture = new THREE.TextureLoader().load( 'data/next-level-button2.png' );
+    texture.magFilter = THREE.NearestFilter;
+    texture.minFilter = THREE.NearestFilter;
+    let sprite = new THREE.Sprite(
+      new THREE.SpriteMaterial({map: texture, color: 0xffffff })
+    );
     sprite.position.set(.8, 0, .3);
     sprite.scale.multiplyScalar(0.2);
     sprite.modelType = ModelTypes.NextLevelButton;

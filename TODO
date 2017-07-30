@@ -16,6 +16,7 @@
 
 
 unassigned:
+- adjust camera to see whole levels (maybe add camera data in level)
 - title screen?
 - visual polish
 
