@@ -174,9 +174,9 @@ class Level {
     // Gather any mispowered (unpowered/overloaded) consumer, with the current
     // value
     let mispowered = [];
-    for (let [counter, power] of counters.entries()) {
-      if (counter.size !== power) {
-        mispowered.push({counter, current_power: power});
+    for (let [consumer, power] of counters.entries()) {
+      if (consumer.size !== power) {
+        mispowered.push({consumer, current_power: power});
       }
     }
     // If there are no mispowered consumers, the level is solved!
