@@ -151,16 +151,21 @@ class Game
 
       if (thing.constructor.name === 'Consumer')
       {
+        model = new THREE.Object3D();
+        const modelPos = this.gridToWorld(pos[0], pos[1]);
+        model.position.set(modelPos[0], 0, modelPos[1]);
+
         for (let i = 0; i < thing.size; ++i)
         {
-          model = loadModel(THING_MODELS['Consumer']);
-          model.scale.set(TILE_SIZE*0.1, TILE_SIZE*0.1,TILE_SIZE*0.1);
+          const house = loadModel(THING_MODELS['Consumer']);
+          house.scale.set(TILE_SIZE*0.1, TILE_SIZE*0.1,TILE_SIZE*0.1);
 
-          const maxOffset = TILE_SIZE * 1;
-          const modelPos = this.gridToWorld(pos[0], pos[1]);
-          model.position.set(modelPos[0] + Math.random() * maxOffset, 0, modelPos[1] + Math.random() * maxOffset);
-          this.scene.add(model);
+          const maxOffset = TILE_SIZE * 0.5;
+          house.position.set(Math.random() * maxOffset, 0, Math.random() * maxOffset);
+          model.add(house);
         }
+
+        this.scene.add(model);
       }
       else
       {
