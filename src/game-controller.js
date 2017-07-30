@@ -45,6 +45,11 @@ class GameController {
   // Take generator from level and put it in the currently held slot.
   // If we are currently holding an item, swap them instead.
   pickUpThing(thing) {
+
+    if (!(thing instanceof Generator)) {
+      return;
+    }
+
     if (this.heldThing) {
       this.level.replaceThingBy(thing, this.heldThing);
     } else {
@@ -58,7 +63,7 @@ class GameController {
   pickUpThingAt(x,y) {
     let thing = this.level.getThingAt(x,y);
 
-    if (thing) {
+    if (thing && thing instanceof Generator) {
       this.pickUpThing(thing);
     }
   }
