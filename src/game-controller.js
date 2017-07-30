@@ -148,6 +148,19 @@ class GameController {
       this.hoveredTile = null;
     }
 
+    // Highlight hovered generators
+    let generator = this.game.pickGenerator();
+    if (generator) {
+
+      if (generator != this.highlightedThing) {
+        this.highlightedThing = generator;
+        this.game.highlightThing(generator, true);
+      }
+    } else {
+      this.game.highlightThing(this.highlightedThing, false);
+      this.highlightedThing = null;
+    }
+
     // Hover effect for button under cursor
     let button = this.game.pickButton();
     if (this.game.pickButton()) {
@@ -209,7 +222,7 @@ class GameController {
     this.app.renderer.setScissorTest(true);
     this.app.renderer.setClearColor(DAY_CLEARCOLOR, 1);
 
-    this.app.renderer.render(this.game.scene, this.game.camera);
+    this.game.composer.render(dt);
 
     if (this.level.hasNight) {
       // Night view
@@ -218,7 +231,8 @@ class GameController {
       this.app.renderer.setScissorTest(true);
       this.app.renderer.setClearColor(NIGHT_CLEARCOLOR, 1);
 
-      this.app.renderer.render(this.game.scene, this.game.camera);
+      //this.app.renderer.render(this.game.scene, this.game.camera);
+      this.game.composer.render();
     }
   }
 

@@ -72,6 +72,29 @@ class Game
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
     this.scene.add(this.camera);
 
+    // Render pipeline
+    //  1 - normal render
+    //  2 - outline selected objects
+    //  3 - copy to screen
+
+    this.composer = new THREE.EffectComposer(this.app.renderer);
+
+    const renderPass = new THREE.RenderPass(this.scene, this.camera);
+    this.composer.addPass(renderPass);
+
+    this.outlinePass = new THREE.OutlinePass(new THREE.Vector2(this.app.width, this.app.height), this.scene, this.camera);
+    this.outlinePass.edgeStrength = 1;
+    this.outlinePass.edgeThickness = 0.25;
+    this.outlinePass.visibleEdgeColor.setHex(0xFFFFFF);
+    this.outlinePass.hiddenEdgeColor.setHex(0xFFFFFF);
+    this.composer.addPass(this.outlinePass);
+
+    const copyPass = new THREE.ShaderPass(THREE.CopyShader);
+    copyPass.renderToScreen = true;
+    this.composer.addPass(copyPass);
+
+    // Lighting
+
     this.ambientLight = new THREE.AmbientLight(0x404040);
     this.scene.add(this.ambientLight);
 
@@ -94,6 +117,8 @@ class Game
     this.nextLevelButton = sprite;
     sprite.visible = false;
     this.scene.add(sprite);
+
+    // Events coming from the model
 
     document.addEventListener('init terrain', ev => {
       let {width, height} = ev.detail;
@@ -276,6 +301,17 @@ class Game
     } else {
       tile.material.color.setHex(tile.coords[0] ^ tile.coords[1] ? TILE_COLOR_1 : TILE_COLOR_2);
     }
+  }
+
+  highlightThing(thing, highlight)
+  {
+    if (!thing)
+      return;
+
+    if (highlight)
+      this.outlinePass.selectedObjects.push(thing.model);
+    else
+      this.outlinePass.selectedObjects.splice(this.outlinePass.selectedObjects.indexOf(thing.model), 1);
   }
 
   eventToCameraPos(event)
