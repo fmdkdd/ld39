@@ -6,7 +6,7 @@
 - adjust models scale
 - fix turbine 'head' rotating (only the part connected to the blades should rotate)
 - shadows are too strong (and too large?)
-
+- show heldThing somewhere (under cursor?)
 
 @fmdkdd:
 - add more levels
@@ -15,7 +15,6 @@
 
 
 unassigned:
-- show heldThing somewhere (under cursor?)
 - adjust camera to see whole levels (maybe add camera data in level)
 - title screen?
 - visual polish (transitions)
