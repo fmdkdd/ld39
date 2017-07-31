@@ -299,7 +299,7 @@ class Game
     for (let tile of thing.getPoweredCells(gridPos[0], gridPos[1], night))
     {
       const outside = tile[0] < 0 || tile[0] >= this.tiles[0] || tile[1] < 0 || tile[1] >= this.tiles[1];
-      const opacity = outside ? 0.2 : 0.5;
+      const opacity = outside ? 0.1 : 0.5;
 
       const edges = new THREE.PlaneGeometry(TILE_SIZE, TILE_SIZE);
       const plane = new THREE.Mesh(edges, new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity }));
