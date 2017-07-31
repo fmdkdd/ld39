@@ -185,6 +185,7 @@ class SolarPanel extends Generator {
     super(`solarpanel-${Thing.ID++}`);
 
     this.rotation = Generator.Rotation.TOP;
+    this.t = 0;
   }
 
   // Return a list of all the cells that may be powered by this generator
@@ -239,6 +240,18 @@ class SolarPanel extends Generator {
       Generator.Rotation.RIGHT : Generator.Rotation.TOP;
 
     dispatch('thing rotated', {thing: this});
+  }
+
+  render(dt, day) {
+    this.t += dt;
+
+    // Pulse during the day
+    if (day) {
+      this.model.traverse(c => {
+        if (c.material)
+          c.material.emissive.setScalar(Math.abs(Math.sin(this.t * 1)) * 0.25);
+      });
+    }
   }
 
 }
