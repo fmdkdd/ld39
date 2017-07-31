@@ -64,6 +64,8 @@ class GameController {
 
   loadLevel(num) {
 
+    this.transitionRight = num > this.currentLevel;
+
     const loadNext = () => {
       this.level = new Level(LEVELS[num]);
       this.currentLevel = num;
@@ -107,7 +109,7 @@ class GameController {
 
         // load the new scene and animate it in
         loadNext();
-        this.newLevelMovingIn.position.x = 2;
+        this.newLevelMovingIn.position.x = this.transitionRight ? 2 : -2;
         this.transitionTimer = 0;
 
         setTimeout(() => {
@@ -332,10 +334,7 @@ class GameController {
 
         const ownMispowered = mispowered.find(m => m.thing === thing);
         const currentPower = ownMispowered ? ownMispowered.current_power : thing.size;
-if (thing instanceof Generator)
-{
-console.log()
-}
+
         // Red/green outline depending on the current status
         this.game.outlineThing(thing, !ownMispowered, thing.size, currentPower);
 
@@ -404,11 +403,17 @@ console.log()
     // Animate the previous level out of the screen
     if (this.oldLevelMovingOut) {
       this.transitionTimer += dt;
-      this.oldLevelMovingOut.position.x = this.app.ease(this.transitionTimer / LEVEL_TRANSITION_DURATION, 'inOutElastic') * -2;
+
+      this.oldLevelMovingOut.position.x = this.transitionRight ?
+        this.app.ease(this.transitionTimer / LEVEL_TRANSITION_DURATION, 'inOutElastic') * -2 :
+        this.app.ease(this.transitionTimer / LEVEL_TRANSITION_DURATION, 'inOutElastic') * 2;
     }
     else if (this.newLevelMovingIn) {
       this.transitionTimer += dt;
-      this.newLevelMovingIn.position.x = 2 - this.app.ease(this.transitionTimer / LEVEL_TRANSITION_DURATION, 'inOutElastic') * 2;
+
+      this.newLevelMovingIn.position.x = this.transitionRight ?
+        2 - this.app.ease(this.transitionTimer / LEVEL_TRANSITION_DURATION, 'inOutElastic') * 2 :
+        -2 + this.app.ease(this.transitionTimer / LEVEL_TRANSITION_DURATION, 'inOutElastic') * 2;
     }
 
     this.game.render(dt);
