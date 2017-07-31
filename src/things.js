@@ -39,6 +39,10 @@ class Generator extends Thing {
     this.rotation = Generator.Rotation.TOP;
   }
 
+  canRotate(night) {
+    return false;
+  }
+
   rotate() {
     this.rotation = (this.rotation + 1) % 4;
 
@@ -171,6 +175,10 @@ class WindTurbine extends Generator {
     });
   }
 
+  canRotate(night) {
+    return true;
+  }
+
   render(dt, day) {
     // Rotate the blades, different speeds for day and night
     this.t += dt;
@@ -232,6 +240,10 @@ class SolarPanel extends Generator {
         }
       }
     });
+  }
+
+  canRotate(night) {
+    return night ? true: false;
   }
 
   rotate() {

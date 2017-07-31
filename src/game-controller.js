@@ -136,8 +136,7 @@ class GameController {
   rotateThingAt(x,y) {
     let thing = this.level.getThingAt(x,y);
 
-    if (thing instanceof WindTurbine ||
-        thing instanceof SolarPanel) {
+    if (thing && thing.canRotate(this.level.hasNight)) {
       thing.rotate();
     }
   }
@@ -213,7 +212,9 @@ class GameController {
     }
 
     if (this.heldThing) {
-      this.heldThing.rotate();
+      if (this.heldThing.canRotate(this.level.hasNight)) {
+        this.heldThing.rotate();
+      }
     }
   }
 
