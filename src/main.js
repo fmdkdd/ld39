@@ -125,6 +125,6 @@ window.addEventListener('DOMContentLoaded', function main() {
     },
 
     // Record FPS through the prerender and postrender events
-    postrender() { this.stats.update(); },
+    postrender() { this.stats.update(); }
   })
 })

@@ -55,6 +55,8 @@ const NIGHT_CLEARCOLOR = 0x00476e;
 
 const HELD_THING_VERTICAL_OFFSET = 0.05;
 
+const LEVEL_TRANSITION_DURATION = 1;
+
 const ModelTypes = {
   Terrain: 0,
   NextLevelButton: 1,
@@ -95,6 +97,9 @@ class Game
     this.camera.position.set(.5, 2, 2);
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
     this.scene.add(this.camera);
+
+    // Virtual root of the scene to move everything during transitions
+    this.sceneRoot = new THREE.Object3D();
 
     // Render pipeline
     //  1 - normal render
@@ -221,22 +226,37 @@ class Game
     this.previousLevelButton.style.display = 'none';
   }
 
+  // Will return a new objects with the removed scene content as children
   unloadLevel(level) {
+    const oldContent = new THREE.Object3D();
+
     // Remove all objects from the previous level, if any
     for (let [thing,_] of level.things) {
       this.scene.remove(thing.model);
+      oldContent.add(thing.model);
     }
 
-    this.terrain.forEach(t => this.scene.remove(t));
+    this.terrain.forEach(t =>
+    {
+      this.scene.remove(t);
+      oldContent.add(t);
+    });
     this.scene.remove(this.dirt);
+    oldContent.add(this.dirt);
 
     if (this.dustParticles) this.scene.remove(this.dustParticles.mesh);
     if (this.smokeParticles) this.scene.remove(this.smokeParticles.mesh);
     this.dustParticles = null;
     this.smokeParticles = null;
+
+    this.sceneRoot = new THREE.Object3D();
+
+    return oldContent;
   }
 
+  // Will return a new object with the contents of the level as children
   loadLevel(level) {
+
     this.terrain = [];
 
     // Terrain tiles, centered on the origin
@@ -258,7 +278,7 @@ class Game
         tile.coords = [x, z];
         this.updateTileColor(tile, false);
         tile.receiveShadow = true;
-        this.scene.add(tile);
+        this.sceneRoot.add(tile);
 
         this.terrain.push(tile);
       }
@@ -267,7 +287,10 @@ class Game
     const dirtGeometry = new THREE.BoxGeometry(this.tiles[0] * TILE_SIZE, .05, this.tiles[1] * TILE_SIZE);
     this.dirt = new THREE.Mesh(dirtGeometry, new THREE.MeshLambertMaterial({ color: 0x854c30 }));
     this.dirt.position.y = -0.05
-    this.scene.add(this.dirt);
+    this.sceneRoot.add(this.dirt);
+
+    this.scene.add(this.sceneRoot);
+    return this.sceneRoot;
   }
 
   putNewThing(thing, pos)
@@ -318,7 +341,7 @@ class Game
     root.thing = thing;
 
     root.add(model);
-    this.scene.add(root);
+    this.sceneRoot.add(root);
   }
 
   updateCoverage(thing, gridPos, visible, night)

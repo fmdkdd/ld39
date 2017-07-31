@@ -59,24 +59,65 @@ class GameController {
   }
 
   loadLevel(num) {
+
+    const loadNext = () => {
+      this.level = new Level(LEVELS[num]);
+      this.currentLevel = num;
+      this.heldThing = null;
+      this.newLevelMovingIn = this.game.loadLevel(this.level);
+      this.game.hideNextLevelButton();
+      this.validate();
+
+      if (this.currentLevel > 0) {
+        this.game.showPreviousLevelButton();
+      } else {
+        this.game.hidePreviousLevelButton();
+      }
+
+      this.validate();
+
+      this.canInteract = true;
+    };
+
+    // Transition animation:
+    //  1 - animate the previous level out
+    //  2 - delete the previous level
+    //  3 - load the new level
+    //  4 - animate the new level in
+
+    // Transition between levels
     if (this.level) {
-      this.game.unloadLevel(this.level);
+
+      // Unload the level and group everything in a node that
+      // will be animated out of the screen
+      this.oldLevelMovingOut = this.game.unloadLevel(this.level);
+      this.game.scene.add(this.oldLevelMovingOut);
+      this.transitionTimer = 0;
+
+      setTimeout(() => {
+
+        // Delete the old scene
+        this.game.scene.remove(this.oldLevelMovingOut);
+        this.oldLevelMovingOut = null;
+
+        // load the new scene and animate it in
+        loadNext();
+        this.newLevelMovingIn.position.x = 2;
+        this.transitionTimer = 0;
+
+        setTimeout(() => {
+          this.newLevelMovingIn = null;
+        }, 1000);
+
+      }, 1000);
     }
-    this.level = new Level(LEVELS[num]);
-    this.currentLevel = num;
-    this.heldThing = null;
-    this.game.loadLevel(this.level);
-    this.game.hideNextLevelButton();
 
-    if (this.currentLevel > 0) {
-      this.game.showPreviousLevelButton();
-    } else {
-      this.game.hidePreviousLevelButton();
+    // First level
+    else {
+      loadNext();
+      this.game.scene.add(this.newLevelMovingIn);
+      this.newLevelMovingIn = null;
     }
-
-    this.validate();
-
-    this.canInteract = true;
   }
 
   // Proceed to next level, or to exit screen
@@ -202,6 +243,10 @@ class GameController {
 
   pointermove(pointer) {
     if (!this.canInteract) return;
+
+    // Ignore the pointer during transitions
+    if (!this.level || this.oldLevelMovingOut || this.newLevelMovingIn)
+      return;
 
     this.game.updatePicking(pointer, this.level.hasNight);
 
@@ -347,6 +392,16 @@ class GameController {
   }
 
   render(dt) {
+
+    // Animate the previous level out of the screen
+    if (this.oldLevelMovingOut) {
+      this.transitionTimer += dt;
+      this.oldLevelMovingOut.position.x = this.app.ease(this.transitionTimer / LEVEL_TRANSITION_DURATION, 'inOutElastic') * -2;
+    }
+    else if (this.newLevelMovingIn) {
+      this.transitionTimer += dt;
+      this.newLevelMovingIn.position.x = 2 - this.app.ease(this.transitionTimer / LEVEL_TRANSITION_DURATION, 'inOutElastic') * 2;
+    }
 
     this.game.render(dt);
 
