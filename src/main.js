@@ -54,6 +54,9 @@ window.addEventListener('DOMContentLoaded', function main() {
     smoothing: false,
 
     preload() {
+      console.info('-------------------------- Hello there! ---------------------------');
+      console.info('If you find any bugs, please report them to https://github.com/fmdkdd/ld39/issue');
+      console.info('---------------------------- Thanks! ------------------------------');
       // Put FPS counter to bottom right
       this.stats = new Stats();
       this.stats.dom.style.left = '';

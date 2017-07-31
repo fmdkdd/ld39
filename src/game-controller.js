@@ -41,7 +41,13 @@ class GameController {
 
     document.getElementById('next-level').addEventListener('mousedown', ev => {
       if (ev.button === 0) {
-        this.nextLevel();
+
+        if (this.currentLevel < LEVELS.length-1) {
+          this.nextLevel();
+        } else {
+          // Show end message if there no more levels
+          this.showEndScreen();
+        }
       }
       ev.preventDefault(); // prevent drag and dropping the image
     });
@@ -90,19 +96,14 @@ class GameController {
       }
 
       if (this.validationResult.solved || this.currentLevel <= this.getMaxLevelSolved()) {
-        if (this.currentLevel < LEVELS.length-1) {
-          // The level is solved, offer to proceed to next level
-          this.game.showNextLevelButton();
-        } else {
-          // Show end message if there no more levels
-          this.showEndScreen();
-        }
+        // The level is solved, offer to proceed to next level
+        this.game.showNextLevelButton();
       }
     }
   }
 
   showEndScreen() {
-    // TODO:
+    document.getElementById('end-screen').style.display = 'block';
   }
 
   // Put the held item at (x,y) in the level.  Do nothing if we have no held item.
