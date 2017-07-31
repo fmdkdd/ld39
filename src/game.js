@@ -86,6 +86,8 @@ class Game
       Obstacle: this.app.data.rock
     };
 
+    this.noParticles = window.localStorage.getItem('noParticles');
+
     this.scene = new THREE.Scene();
     this.raycaster = new THREE.Raycaster();
 
@@ -400,6 +402,8 @@ class Game
   // (crash if done in the constructor, no idea why)
   createParticleSystem(texturePath)
   {
+    if (this.noParticles) return;
+
     if (this.dustParticles)
       return;
 
@@ -418,6 +422,8 @@ class Game
 
   putParticleCloud(x, y)
   {
+    if (this.noParticles) return;
+
     if (!this.dustParticles)
       this.dustParticles = this.createParticleSystem('data/dust.png');
 
@@ -464,6 +470,8 @@ class Game
   // Show smoke particles to represent overpowered consumers
   showSmoke(thing, x, y, visible)
   {
+    if (this.noParticles) return;
+
     if (!this.smokeParticles)
       this.smokeParticles = this.createParticleSystem('data/smoke.png');
 
