@@ -201,12 +201,15 @@ class SolarPanel extends Generator {
   getPoweredCells(ox,oy, night) {
     let cells = Pattern.crossCenteredAt(ox,oy);
 
+    // Remove center cell
+    cells.shift();
+
     // At night, remove two opposite cells, depending on rotation
     if (night) {
       if (this.rotation % 2) {
-        cells.splice(1,2);
+        cells.splice(0,2);
       } else {
-        cells.splice(3,2);
+        cells.splice(2,2);
       }
     }
 
