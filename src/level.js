@@ -185,6 +185,13 @@ class Level {
           break;
         }
       }
+
+      // Report batteries as mispowered at night when mispowered at day
+      for (let m of mispowered_day) {
+        if (m.thing instanceof Battery) {
+          mispowered_night.push(m);
+        }
+      }
     }
 
     return {solved, mispowered_day, mispowered_night};
