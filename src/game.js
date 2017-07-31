@@ -249,7 +249,7 @@ class Game
         const house = loadModel(THING_MODELS['Consumer']);
         house.position.set(-TILE_SIZE * 0.1, 0, -TILE_SIZE * 0.1);
         house.rotation.y = Math.random() * 360;
-        house.scale.multiplyScalar(TILE_SIZE*0.12);
+        house.scale.multiplyScalar(TILE_SIZE*0.08);
         model.add(house);
       }
       else {
