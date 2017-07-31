@@ -226,14 +226,25 @@ class Game
     {
       model = new THREE.Object3D();
 
-      const positions = [[-TILE_SIZE * 0.2, -TILE_SIZE * 0.2], [TILE_SIZE * 0.2, TILE_SIZE * -0.05], [-TILE_SIZE * 0.12, TILE_SIZE * 0.2]];
-      for (let i = 0; i < thing.size; ++i)
-      {
+      // Center single houses so we don't think they are part of a neighbouring
+      // cell
+      if (thing.size === 1) {
         const house = loadModel(THING_MODELS['Consumer']);
-        house.position.set(positions[i][0], 0, positions[i][1]);
+        house.position.set(-TILE_SIZE * 0.1, 0, -TILE_SIZE * 0.1);
         house.rotation.y = Math.random() * 360;
         house.scale.multiplyScalar(TILE_SIZE*0.08);
         model.add(house);
+      }
+      else {
+        const positions = [[-TILE_SIZE * 0.2, -TILE_SIZE * 0.2], [TILE_SIZE * 0.2, TILE_SIZE * -0.05], [-TILE_SIZE * 0.12, TILE_SIZE * 0.2]];
+        for (let i = 0; i < thing.size; ++i)
+        {
+          const house = loadModel(THING_MODELS['Consumer']);
+          house.position.set(positions[i][0], 0, positions[i][1]);
+          house.rotation.y = Math.random() * 360;
+          house.scale.multiplyScalar(TILE_SIZE*0.08);
+          model.add(house);
+        }
       }
 
       model.rotation.y = Math.random() * 360;
