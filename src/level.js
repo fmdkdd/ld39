@@ -128,7 +128,7 @@ class Level {
       }
     }
 
-    // Distribute day power to consurmers and batteries
+    // Distribute day power to consumers and batteries
     for (let th of this.things.keys()) {
       if (th instanceof WindTurbine ||
           th instanceof SolarPanel) {
@@ -153,10 +153,8 @@ class Level {
       // Distribute power from powered batteries
       for (let th of this.things.keys()) {
         if (th instanceof Battery) {
-          let powered = day_counter.get(th) > 0;
-          if (powered) {
-            th.distributeNightPower(this, night_counter);
-          }
+          th.isPowered = day_counter.get(th) > 0;
+          th.distributeNightPower(this, night_counter);
         }
       }
     }

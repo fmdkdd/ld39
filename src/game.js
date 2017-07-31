@@ -325,7 +325,9 @@ class Game
     coverage.name = 'coverage';
     coverage.cosmetic = true;
 
-    for (let tile of thing.getPoweredCells(gridPos[0], gridPos[1], night))
+    for (let tile of thing.getPoweredCells(gridPos[0], gridPos[1], night,
+                                           this.app.state.gameController.level // duh
+                                          ))
     {
       const outside = tile[0] < 0 || tile[0] >= this.tiles[0] || tile[1] < 0 || tile[1] >= this.tiles[1];
       const opacity = outside ? 0.1 : 0.5;

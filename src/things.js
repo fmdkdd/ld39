@@ -280,11 +280,22 @@ class Battery extends Generator {
 
   constructor() {
     super(`battery-${Thing.ID++}`);
+
+    this.isPowered = false;
   }
 
-  getPoweredCells() {
-    // no coverage
-    return []
+  getPoweredCells(ox,oy, night,level) {
+    // No coverage in the day
+    if (!night) {
+      return [];
+    }
+
+    // No coverage if unpowered
+    if (!this.isPowered) {
+      return [];
+    }
+
+    return connectedComponents(ox,oy,level);
   }
 
   distributeDayPower(level, counters) {
@@ -299,11 +310,12 @@ class Battery extends Generator {
 
     // Collect all neighbors that are next to this battery, or that are next to
     // a neighbor that's next to this battery, etc.
-    let neighbors = connectedComponents(ox,oy,level);
+    let powered_cells = this.getPoweredCells(ox,oy,true,level);
 
     // Match the power distribution
-    neighbors.forEach(c => {
-      counters.set(c, c.size);
+    powered_cells.forEach(([x,y]) => {
+      let thing = level.getThingAt(x,y);
+      counters.set(thing, thing.size);
     });
   }
 }
@@ -334,7 +346,7 @@ function connectedComponents(x,y, level) {
     let thing = level.getThingAt(x,y);
 
     if (thing instanceof Consumer) {
-      consumers.push(thing);
+      consumers.push([x,y]);
       queue.push.apply(queue, neighborsOf(x,y));
     }
 
