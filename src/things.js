@@ -164,7 +164,7 @@ class SolarPanel extends Generator {
   constructor() {
     super(`solarpanel-${Thing.ID++}`);
 
-    this.rotation = Generator.Rotation.BOTTOM;
+    this.rotation = Generator.Rotation.TOP;
   }
 
   // Return a list of all the cells that may be powered by this generator
@@ -202,8 +202,8 @@ class SolarPanel extends Generator {
 
   rotate() {
     // Only two variations for solar panels
-    this.rotation = this.rotation === Generator.Rotation.BOTTOM ?
-      Generator.Rotation.RIGHT : Generator.Rotation.BOTTOM;
+    this.rotation = this.rotation === Generator.Rotation.TOP ?
+      Generator.Rotation.RIGHT : Generator.Rotation.TOP;
 
     dispatch('thing rotated', {thing: this});
   }
