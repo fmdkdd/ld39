@@ -621,9 +621,9 @@ class Game
     else
     {
       if (powered)
-        this.poweredPass.selectedObjects.push(thing.model);
+        this.poweredPass.selectedObjects.push(thing.model.getObjectByName('model'));
       else
-        this.underpoweredPass.selectedObjects.push(thing.model);
+        this.underpoweredPass.selectedObjects.push(thing.model.getObjectByName('model'));
     }
   }
 
@@ -645,9 +645,9 @@ class Game
     }
     else
     {
-      this.poweredPass.selectedObjects.splice(this.poweredPass.selectedObjects.indexOf(thing.model), 1);
-      this.underpoweredPass.selectedObjects.splice(this.underpoweredPass.selectedObjects.indexOf(thing.model), 1);
-      this.overpoweredPass.selectedObjects.splice(this.overpoweredPass.selectedObjects.indexOf(thing.model), 1);
+      this.poweredPass.selectedObjects.splice(this.poweredPass.selectedObjects.indexOf(thing.model.getObjectByName('model')), 1);
+      this.underpoweredPass.selectedObjects.splice(this.underpoweredPass.selectedObjects.indexOf(thing.model.getObjectByName('model')), 1);
+      this.overpoweredPass.selectedObjects.splice(this.overpoweredPass.selectedObjects.indexOf(thing.model.getObjectByName('model')), 1);
     }
   }
 

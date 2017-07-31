@@ -332,7 +332,10 @@ class GameController {
 
         const ownMispowered = mispowered.find(m => m.thing === thing);
         const currentPower = ownMispowered ? ownMispowered.current_power : thing.size;
-
+if (thing instanceof Generator)
+{
+console.log()
+}
         // Red/green outline depending on the current status
         this.game.outlineThing(thing, !ownMispowered, thing.size, currentPower);
 
