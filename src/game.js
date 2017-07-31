@@ -106,20 +106,20 @@ class Game
     const renderPass = new THREE.RenderPass(this.scene, this.camera);
     this.composer.addPass(renderPass);
 
-    const addOutline = (color) =>
+    const addOutline = (color, strength) =>
     {
       const pass = new THREE.OutlinePass(new THREE.Vector2(this.app.width, this.app.height), this.scene, this.camera);
-      pass.edgeStrength = 1;
-      pass.edgeThickness = 0.25;
+      pass.edgeStrength = strength;
+      pass.edgeThickness = 0.2;
       pass.visibleEdgeColor.setHex(color);
       pass.hiddenEdgeColor.setHex(color);
       this.composer.addPass(pass);
       return pass;
     };
 
-    this.selectionPass = addOutline(0xFFFFFF); // White outline around selected things
-    this.poweredPass = addOutline(0x00FF00); // Green outline around powered things
-    this.overpoweredPass = addOutline(0xFF0000); // Red outline around overpowered things
+    this.selectionPass = addOutline(0xFFFFFF, 1); // White outline around selected things
+    this.poweredPass = addOutline(0x00FF00, 3); // Green outline around powered things
+    this.overpoweredPass = addOutline(0xFF0000, 3); // Red outline around overpowered things
 
     const copyPass = new THREE.ShaderPass(THREE.CopyShader);
     copyPass.renderToScreen = true;
@@ -158,9 +158,13 @@ class Game
     document.addEventListener('level put thing', ev => {
       let {thing, pos} = ev.detail;
       if (thing.model) {
+
         const modelPos = this.gridToWorld(pos[0], pos[1]);
         thing.model.position.set(modelPos[0], 0, modelPos[1]);
         thing.model.visible = true;
+
+        // Make sure that the model touches the ground (might have been elevated when picked)
+        thing.model.getObjectByName('model').position.y = 0;
       }
       else {
         this.putNewThing(thing, pos);
@@ -245,7 +249,7 @@ class Game
         const house = loadModel(THING_MODELS['Consumer']);
         house.position.set(-TILE_SIZE * 0.1, 0, -TILE_SIZE * 0.1);
         house.rotation.y = Math.random() * 360;
-        house.scale.multiplyScalar(TILE_SIZE*0.08);
+        house.scale.multiplyScalar(TILE_SIZE*0.12);
         model.add(house);
       }
       else {
@@ -297,12 +301,12 @@ class Game
       const outside = tile[0] < 0 || tile[0] >= this.tiles[0] || tile[1] < 0 || tile[1] >= this.tiles[1];
       const opacity = outside ? 0.2 : 0.5;
 
-      const edges = new THREE.EdgesGeometry(new THREE.PlaneGeometry(TILE_SIZE, TILE_SIZE));
-      const plane = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity }));
+      const edges = new THREE.PlaneGeometry(TILE_SIZE, TILE_SIZE);
+      const plane = new THREE.Mesh(edges, new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity }));
 
       const worldPos = this.gridToWorld(tile[0] - gridPos[0], tile[1] - gridPos[1]);
       plane.position.set((tile[0] - gridPos[0]) * TILE_SIZE, 0.001, (tile[1] - gridPos[1]) * TILE_SIZE);
-      plane.rotation.x = Math.PI / 2;
+      plane.rotation.x = -Math.PI / 2;
 
       coverage.add(plane);
     }
@@ -313,7 +317,8 @@ class Game
   moveThingAt(thing, gridPos)
   {
     const worldPos = this.gridToWorld(gridPos[0], gridPos[1]);
-    thing.model.position.set(worldPos[0], HELD_THING_VERTICAL_OFFSET, worldPos[1]);
+    thing.model.position.set(worldPos[0], 0, worldPos[1]);
+    thing.model.getObjectByName('model').position.y = HELD_THING_VERTICAL_OFFSET;
   }
 
   // Instantiate the particle system on demand
@@ -374,10 +379,11 @@ class Game
     this.dustParticles.addEmitter(emitter);
 
     // Program the removal of the emitter
-    setTimeout(() => {
+    // XXX: sometimes make the particle engine crash
+    /*setTimeout(() => {
       emitter.disable();
       this.dustParticles.removeEmitter(emitter);
-    }, 2000);
+    }, 2000);*/
   }
 
   // Show smoke particles to represent overpowered consumers

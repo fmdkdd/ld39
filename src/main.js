@@ -47,7 +47,7 @@ window.addEventListener('DOMContentLoaded', function main() {
     width: 320,
     height: 180,
     // scaled to screen dimensions
-    scale: 2.5,
+    scale: 4,
 
     smoothing: false,
 
