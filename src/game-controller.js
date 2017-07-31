@@ -162,8 +162,9 @@ class GameController {
     if (generator) {
 
       if (generator != this.highlightedThing) {
+        this.game.highlightThing(this.highlightedThing, false);
         this.highlightedThing = generator;
-        this.game.highlightThing(generator, true);
+        this.game.highlightThing(this.highlightedThing, true);
       }
     } else {
       this.game.highlightThing(this.highlightedThing, false);

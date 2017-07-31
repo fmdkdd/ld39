@@ -425,9 +425,13 @@ class Game
     const model = thing.model.getObjectByName('model');
 
     if (highlight)
+    {
       this.outlinePass.selectedObjects.push(model);
+    }
     else
+    {
       this.outlinePass.selectedObjects.splice(this.outlinePass.selectedObjects.indexOf(model), 1);
+    }
   }
 
   eventToCameraPos(event)
