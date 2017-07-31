@@ -252,7 +252,7 @@ class GameController {
     this.validationFeedback(this.validationResult.mispowered_night);
 
     // Build coverage for day
-    this.rebuildCoverage(night);
+    this.rebuildCoverage(true);
 
     // Cosmetics
     this.game.ambientLight.visible = false;
@@ -308,7 +308,7 @@ class GameController {
       this.setupNightScene();
 
       //this.app.renderer.render(this.game.scene, this.game.camera);
-      this.game.composer.render();
+      this.game.composer.render(dt);
     }
   }
 

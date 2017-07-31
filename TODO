@@ -1,6 +1,5 @@
 @merwan:
 - shadows are too strong (and too large?)
-- visual feedback for POWERED battery (we forgot that!)
 - highlight is applied to particles (maybe removing the particles should fix it?)
 - particles stay between levels
 - no smoke puff after 100 particles have been emitted (because we don't remove them?)
@@ -9,6 +8,7 @@
 - add more levels
 - sound effects
 - background music
+- add explanations below the game
 
 
 unassigned:
@@ -28,3 +28,4 @@ done:
 - outline feedback on consumers (same effect)
 - make rock grey (looks interactable as is)
 - validate day and night separately (rules are different)
+- visual feedback for POWERED battery (we forgot that!)
