@@ -69,9 +69,9 @@ window.addEventListener('DOMContentLoaded', function main() {
       this.loadSounds('pickup');
       this.loadSounds('putdown');
       this.loadSounds('rotate');
-      this.sound.alias('pickup-scaled', 'pickup', .1, 1);
-      this.sound.alias('putdown-scaled', 'putdown', .12, 1);
-      this.sound.alias('rotate-scaled', 'rotate', .05, 1);
+      this.sound.alias('pickup-scaled', 'pickup', .03, 1);
+      this.sound.alias('putdown-scaled', 'putdown', .035, 1);
+      this.sound.alias('rotate-scaled', 'rotate', .02, 1);
       this.loadSounds('happy-clouds');
     },
 
