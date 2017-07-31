@@ -150,7 +150,7 @@ class Game
 
     // Sprites
 
-    const sunTexture = new THREE.TextureLoader().load("data/sun.png");
+    /*const sunTexture = new THREE.TextureLoader().load("data/sun.png");
     sunTexture.magFilter = THREE.NearestFilter;
     sunTexture.minFilter = THREE.LinearMipMapLinearFilter;
 
@@ -168,7 +168,7 @@ class Game
     this.moon.scale.setScalar(0.75);
     this.moon.position.set(0.4, 0.3, -0.7);
     this.moon.lookAt(this.camera.position)
-    this.scene.add(this.moon);
+    this.scene.add(this.moon);*/
 
     // Lighter shadows:
     // https://stackoverflow.com/questions/40938238/shadow-darkness-in-threejs-and-object-opacity

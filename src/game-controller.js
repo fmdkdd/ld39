@@ -52,7 +52,7 @@ class GameController {
     });
 
     document.getElementById('previous-level').addEventListener('mousedown', ev => {
-      if (!this.level || this.oldLevelMovingOut || this.newLevelMovingIn || this.currentLevel > this.getMaxLevelSolved())
+      if (!this.level || this.oldLevelMovingOut || this.newLevelMovingIn)
         return;
       if (ev.button === 0) {
         this.previousLevel();
@@ -370,8 +370,8 @@ class GameController {
     this.game.dayLight.visible = true;
     this.game.nightLight.visible = false;
 
-    this.game.sun.visible = true;
-    this.game.moon.visible = false;
+    //this.game.sun.visible = true;
+    //this.game.moon.visible = false;
 
     // Type-specific rendering
     if (this.level) {
@@ -392,8 +392,8 @@ class GameController {
     this.game.ambientLight.visible = false;
     this.game.dayLight.visible = false;
 
-    this.game.sun.visible = false;
-    this.game.moon.visible = true;
+    //this.game.sun.visible = false;
+    //this.game.moon.visible = true;
 
     // Type-specific rendering
     if (this.level) {
