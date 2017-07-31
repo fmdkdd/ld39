@@ -159,7 +159,7 @@ class GameController {
 
       // Don't highlight tiles with consumer on them
       let thing = this.level.getThingAt(tile.coords[0], tile.coords[1]);
-      if (!(thing instanceof Consumer)) {
+      if (!(thing instanceof Consumer || thing instanceof Obstacle)) {
         // Highlight the hovered tile
         this.hoveredTile = tile;
         this.game.updateTileColor(this.hoveredTile, true);
