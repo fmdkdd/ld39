@@ -3098,7 +3098,7 @@ PLAYGROUND.Mouse.prototype = {
 
       callback(self.mousewheelEvent);
 
-      orgEvent.preventDefault();
+      // orgEvent.preventDefault();
 
     }, 40);
 
@@ -3112,8 +3112,8 @@ PLAYGROUND.Mouse.prototype = {
 
         if (prevent) {
 
-          event.preventDefault();
-          event.stopPropagation();
+          // event.preventDefault();
+          // event.stopPropagation();
 
         }
 
