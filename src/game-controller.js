@@ -37,10 +37,11 @@ class GameController {
       }
     });
 
-    document.getElementById('next-level').addEventListener('click', ev => {
+    document.getElementById('next-level').addEventListener('mousedown', ev => {
       if (ev.button === 0) {
         this.nextLevel();
       }
+      ev.preventDefault(); // prevent drag and dropping the image
     });
   }
 
