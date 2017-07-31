@@ -248,7 +248,7 @@ class SolarPanel extends Generator {
     // Pulse during the day
     if (day) {
       this.model.traverse(c => {
-        if (c.material)
+        if (c.material && c.material.emissive)
           c.material.emissive.setScalar(Math.abs(Math.sin(this.t * 1)) * 0.25);
       });
     }
