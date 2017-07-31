@@ -241,7 +241,7 @@ class GameController {
       this.game.updateCoverage(th, pos, visible, night);
     }
     if (this.heldThing) {
-      this.game.updateCoverage(this.heldThing, this.heldThingPos, true, false);
+      this.game.updateCoverage(this.heldThing, this.heldThingPos, true, night);
     }
   }
 
