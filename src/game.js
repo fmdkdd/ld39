@@ -119,7 +119,8 @@ class Game
 
     this.selectionPass = addOutline(0xFFFFFF, 1); // White outline around selected things
     this.poweredPass = addOutline(0x00FF00, 3); // Green outline around powered things
-    this.mispoweredPass = addOutline(0xFF0000, 3); // Red outline around overpowered things
+    this.underpoweredPass = addOutline(0xFF0000, 3); // Red outline around underpowered things
+    this.overpoweredPass = addOutline(0xFFFF00, 3); // Yellow outline around overpowered things
 
     const copyPass = new THREE.ShaderPass(THREE.CopyShader);
     copyPass.renderToScreen = true;
@@ -537,20 +538,28 @@ class Game
     {
       const houses = thing.model.getObjectByName('model').children;
 
-      const numPowered = currentPower <= requiredPower ? currentPower : 0;
+      if (currentPower > requiredPower)
+      {
+        for (let i = 0; i < houses.length; ++i)
+          this.overpoweredPass.selectedObjects.push(houses[i]);
+      }
+      else
+      {
+        const numPowered = currentPower <= requiredPower ? currentPower : 0;
 
-      for (let i = 0; i < numPowered; ++i)
-        this.poweredPass.selectedObjects.push(houses[i]);
+        for (let i = 0; i < numPowered; ++i)
+          this.poweredPass.selectedObjects.push(houses[i]);
 
-      for (let i = numPowered; i < houses.length; ++i)
-        this.mispoweredPass.selectedObjects.push(houses[i]);
+        for (let i = numPowered; i < houses.length; ++i)
+          this.underpoweredPass.selectedObjects.push(houses[i]);
+      }
     }
     else
     {
       if (powered)
         this.poweredPass.selectedObjects.push(thing.model);
       else
-        this.mispoweredPass.selectedObjects.push(thing.model);
+        this.underpoweredPass.selectedObjects.push(thing.model);
     }
   }
 
@@ -566,13 +575,15 @@ class Game
       for (let i = 0; i < houses.length; ++i)
       {
         this.poweredPass.selectedObjects.splice(this.poweredPass.selectedObjects.indexOf(houses[i]), 1);
-        this.mispoweredPass.selectedObjects.splice(this.mispoweredPass.selectedObjects.indexOf(houses[i]), 1);
+        this.underpoweredPass.selectedObjects.splice(this.underpoweredPass.selectedObjects.indexOf(houses[i]), 1);
+        this.overpoweredPass.selectedObjects.splice(this.overpoweredPass.selectedObjects.indexOf(houses[i]), 1);
       }
     }
     else
     {
       this.poweredPass.selectedObjects.splice(this.poweredPass.selectedObjects.indexOf(thing.model), 1);
-      this.mispoweredPass.selectedObjects.splice(this.mispoweredPass.selectedObjects.indexOf(thing.model), 1);
+      this.underpoweredPass.selectedObjects.splice(this.underpoweredPass.selectedObjects.indexOf(thing.model), 1);
+      this.overpoweredPass.selectedObjects.splice(this.overpoweredPass.selectedObjects.indexOf(thing.model), 1);
     }
   }
 
