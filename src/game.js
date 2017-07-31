@@ -373,7 +373,11 @@ class Game
 
     this.dustParticles.addEmitter(emitter);
 
-    //setTimeout(() => this.dustParticles.removeEmitter(emitter), 10000);
+    // Program the removal of the emitter
+    setTimeout(() => {
+      emitter.disable();
+      this.dustParticles.removeEmitter(emitter);
+    }, 2000);
   }
 
   // Show smoke particles to represent overpowered consumers
