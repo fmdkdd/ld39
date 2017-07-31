@@ -247,12 +247,11 @@ class Game
 
     for (let tile of thing.getPoweredCells(gridPos[0], gridPos[1], false)) // TODO night
     {
-      // Don't draw outside of the terrain
-      if (tile[0] < 0 || tile[0] >= this.tiles[0] || tile[1] < 0 || tile[1] >= this.tiles[1])
-        continue;
+      const outside = tile[0] < 0 || tile[0] >= this.tiles[0] || tile[1] < 0 || tile[1] >= this.tiles[1];
+      const opacity = outside ? 0.2 : 0.5;
 
       const edges = new THREE.EdgesGeometry(new THREE.PlaneGeometry(TILE_SIZE, TILE_SIZE));
-      const plane = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.25 }));
+      const plane = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity }));
 
       const worldPos = this.gridToWorld(tile[0] - gridPos[0], tile[1] - gridPos[1]);
       plane.position.set((tile[0] - gridPos[0]) * TILE_SIZE, 0.001, (tile[1] - gridPos[1]) * TILE_SIZE);
