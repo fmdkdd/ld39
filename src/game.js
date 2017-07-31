@@ -171,6 +171,8 @@ class Game
     // Lighter shadows:
     // https://stackoverflow.com/questions/40938238/shadow-darkness-in-threejs-and-object-opacity
 
+    this.title = document.getElementById('title');
+
     this.nextLevelButton = document.getElementById('next-level');
     this.hideNextLevelButton();
 
@@ -208,6 +210,14 @@ class Game
         thing.model.visible = false;
       }
     });
+  }
+
+  showTitle() {
+    this.title.style.opacity = 1;
+  }
+
+  hideTitle() {
+    this.title.style.opacity = 0;
   }
 
   showNextLevelButton() {

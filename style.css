@@ -18,6 +18,20 @@ body {
   margin: 20px auto;
 }
 
+#title {
+  position: absolute;
+  z-index: 100;
+  top: 0;
+  right: 30px;
+
+  font-size: 40px;
+  font-family: monospace;
+  color: #369da7;
+  text-shadow: 0 1px 1px #2ceeff;
+
+  transition: opacity 2s linear;
+}
+
 #next-level {
   position: absolute;
   z-index: 100;

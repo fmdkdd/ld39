@@ -66,6 +66,11 @@ class GameController {
 
     this.transitionRight = num > this.currentLevel;
 
+    if (num !== 0)
+      this.game.hideTitle();
+    else
+      this.game.showTitle();
+
     const loadNext = () => {
       this.level = new Level(LEVELS[num]);
       this.currentLevel = num;
