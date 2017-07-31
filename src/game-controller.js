@@ -139,7 +139,6 @@ class GameController {
       // Restore the color of the previously hovered tile
       this.game.updateTileColor(this.hoveredTile, false);
 
-
       // Don't highlight tiles with consumer on them
       let thing = this.level.getThingAt(tile.coords[0], tile.coords[1]);
       if (!(thing instanceof Consumer)) {
@@ -147,8 +146,13 @@ class GameController {
         this.hoveredTile = tile;
         this.game.updateTileColor(this.hoveredTile, true);
       }
+
+      // If we are holding something, keep it under the cursor
+      if (this.heldThing)
+        this.game.moveThingAt(this.heldThing, tile.coords);
+
     } else {
-      // No tile, unhlighlight
+      // No tile, unhighlight
       this.game.updateTileColor(this.hoveredTile, false);
       this.hoveredTile = null;
     }
@@ -173,10 +177,6 @@ class GameController {
     } else {
       this.game.nextLevelButton.material.color.setHex(0xffffff);
     }
-
-    // If we are holding something, keep it under the cursor
-    if (this.heldThing)
-      this.game.moveToCursor(this.heldThing, pointer);
   }
 
   leftclick() {

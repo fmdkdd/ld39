@@ -273,7 +273,7 @@ class Game
         continue;
 
       const edges = new THREE.EdgesGeometry(new THREE.PlaneGeometry(TILE_SIZE, TILE_SIZE));
-      const plane = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff }));
+      const plane = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.25 }));
 
       const worldPos = this.gridToWorld(tile[0] - gridPos[0], tile[1] - gridPos[1]);
       plane.position.set((tile[0] - gridPos[0]) * TILE_SIZE, 0.001, (tile[1] - gridPos[1]) * TILE_SIZE);
@@ -285,15 +285,10 @@ class Game
     thing.model.add(coverage);
   }
 
-  moveToCursor(thing, pointer)
+  moveThingAt(thing, gridPos)
   {
-    const intersections = this.raycast(this.eventToCameraPos(pointer));
-    if (intersections.length)
-    {
-      const hit = intersections[0].point;
-      const newPos = this.snapWorld(hit.x, hit.z);
-      thing.model.position.set(newPos[0], HELD_THING_VERTICAL_OFFSET, newPos[1]);
-    }
+    const worldPos = this.gridToWorld(gridPos[0], gridPos[1]);
+    thing.model.position.set(worldPos[0], HELD_THING_VERTICAL_OFFSET, worldPos[1]);
   }
 
   putParticleCloud(x, y)
@@ -426,10 +421,13 @@ class Game
     if (!thing)
       return;
 
+    // Highlight the effective visual model, not the root (to avoid highlighting attached stuff)
+    const model = thing.model.getObjectByName('model');
+
     if (highlight)
-      this.outlinePass.selectedObjects.push(thing.model);
+      this.outlinePass.selectedObjects.push(model);
     else
-      this.outlinePass.selectedObjects.splice(this.outlinePass.selectedObjects.indexOf(thing.model), 1);
+      this.outlinePass.selectedObjects.splice(this.outlinePass.selectedObjects.indexOf(model), 1);
   }
 
   eventToCameraPos(event)
