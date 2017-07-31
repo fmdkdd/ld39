@@ -138,15 +138,30 @@ class WindTurbine extends Generator {
   }
 
   // Distribute power in a straight line starting from the turbine position
-  distributePower(level, counters, night) {
+  distributeDayPower(level, counters) {
     let [ox,oy] = level.getThingXY(this);
 
     // If there is a consumer in a powered cell, add to its counter
-    this.getPoweredCells(ox,oy,night).forEach(([x,y]) => {
+    this.getPoweredCells(ox,oy, false).forEach(([x,y]) => {
       if (level.inBounds(x,y)) {
         let thing = level.getThingAt(x, y);
         if (thing instanceof Consumer ||
             thing instanceof Battery) {
+          counters.set(thing, counters.get(thing) + 1);
+        }
+      }
+    });
+  }
+
+  // Distribute power in a straight line starting from the turbine position
+  distributeNightPower(level, counters) {
+    let [ox,oy] = level.getThingXY(this);
+
+    // If there is a consumer in a powered cell, add to its counter
+    this.getPoweredCells(ox,oy, true).forEach(([x,y]) => {
+      if (level.inBounds(x,y)) {
+        let thing = level.getThingAt(x, y);
+        if (thing instanceof Consumer) {
           counters.set(thing, counters.get(thing) + 1);
         }
       }
@@ -184,16 +199,29 @@ class SolarPanel extends Generator {
     return cells;
   }
 
-  // Distribute power in a straight line starting from the turbine position
-  distributePower(level, counters, night) {
+  distributeDayPower(level, counters) {
     let [ox,oy] = level.getThingXY(this);
 
     // If there is a consumer in a powered cell, add to its counter
-    this.getPoweredCells(ox,oy,night).forEach(([x,y]) => {
+    this.getPoweredCells(ox,oy,false).forEach(([x,y]) => {
       if (level.inBounds(x,y)) {
         let thing = level.getThingAt(x, y);
         if (thing instanceof Consumer ||
           thing instanceof Battery) {
+          counters.set(thing, counters.get(thing) + 1);
+        }
+      }
+    });
+  }
+
+  distributeNightPower(level, counters) {
+    let [ox,oy] = level.getThingXY(this);
+
+    // If there is a consumer in a powered cell, add to its counter
+    this.getPoweredCells(ox,oy,true).forEach(([x,y]) => {
+      if (level.inBounds(x,y)) {
+        let thing = level.getThingAt(x, y);
+        if (thing instanceof Consumer) {
           counters.set(thing, counters.get(thing) + 1);
         }
       }
@@ -221,14 +249,13 @@ class Battery extends Generator {
     return []
   }
 
-  distributePower(level, counters) {
+  distributeDayPower(level, counters) {
+    // No power to distribute during the day
+  }
+
+  distributeNightPower(level, counters) {
     // Distribute power to all connected components of neighboring
     // consumer, but only if the battery is powered during the day.
-
-    let powered = counters.get(this) > 0;
-
-    // Don't distribute power if unpowered
-    if (!powered) return;
 
     let [ox,oy] = level.getThingXY(this);
 

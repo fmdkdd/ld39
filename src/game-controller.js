@@ -33,7 +33,8 @@ class GameController {
         } else {
           pos = this.level.getThingXY(thing);
         }
-        this.game.updateCoverage(thing, pos);
+
+        this.heldThingPos = pos;
       }
     });
 
@@ -55,6 +56,7 @@ class GameController {
     this.heldThing = null;
     this.game.loadLevel(this.level);
     this.game.hideNextLevelButton();
+    this.validate();
   }
 
   // Proceed to next level, or to exit screen
@@ -70,31 +72,13 @@ class GameController {
 
   validate() {
     if (this.level) {
-      let result = this.level.validate();
+      this.validationResult = this.level.validate();
 
-      this.game.hideNextLevelButton();
-
-      // TODO: visual feedback could be that houses themselves are dark at
-      // first, then they light up when they are powered.
-
-      // Clear previous outlines
-      for (let [thing, _] of this.level.things)
-        this.game.clearOutline(thing);
-
-      for (let [thing, pos] of this.level.things) {
-        if (thing instanceof Consumer || thing instanceof Battery) {
-
-          const mispowered = result.mispowered.some(m => m.thing === thing);
-
-          this.game.outlineThing(thing, !mispowered);
-        }
-      }
-
-      // The level is solved, offer to proceed to next level
-      if (result.solved || this.currentLevelSolved) {
+      if (this.validationResult.solved) {
         // once you've solved it once, that's enough
         this.currentLevelSolved = true;
 
+        // The level is solved, offer to proceed to next level
         this.game.showNextLevelButton();
       }
     }
@@ -118,12 +102,15 @@ class GameController {
       return;
     }
 
+    let thingPos = this.level.getThingXY(thing);
+
     if (this.heldThing) {
       this.level.replaceThingBy(thing, this.heldThing);
     } else {
       this.level.removeThing(thing);
     }
     this.heldThing = thing;
+    this.heldThingPos = thingPos;
 
     // keep the model visible even though it has been removed from the logic grid
     this.heldThing.model.visible = true;
@@ -179,8 +166,10 @@ class GameController {
       }
 
       // If we are holding something, keep it under the cursor
-      if (this.heldThing)
+      if (this.heldThing) {
         this.game.moveThingAt(this.heldThing, tile.coords);
+        this.heldThingPos = tile.coords;
+      }
 
     } else {
       // No tile, unhighlight
@@ -221,6 +210,54 @@ class GameController {
     }
   }
 
+  validationFeedback(mispowered) {
+    // Clear previous outlines
+    for (let [thing, _] of this.level.things)
+      this.game.clearOutline(thing);
+
+    for (let [thing, pos] of this.level.things) {
+      if (thing instanceof Consumer || thing instanceof Battery) {
+
+        const isMispowered = mispowered.some(m => m.thing === thing);
+
+        this.game.outlineThing(thing, !isMispowered);
+      }
+    }
+  }
+
+  rebuildCoverage(night) {
+    for (let [th,pos] of this.level.things.entries()) {
+      if (th instanceof Generator) {
+        this.game.updateCoverage(th, pos, night);
+      }
+    }
+    if (this.heldThing) {
+      this.game.updateCoverage(this.heldThing, this.heldThingPos, false);
+    }
+  }
+
+  setupDayScene() {
+    // Visual feedback for mispowered cells
+    this.validationFeedback(this.validationResult.mispowered_day);
+
+    // Build coverage for day
+    this.rebuildCoverage(false);
+
+    // Cosmetics
+    this.game.ambientLight.visible = true;
+  }
+
+  setupNightScene() {
+    // Visual feedback for mispowered cells
+    this.validationFeedback(this.validationResult.mispowered_night);
+
+    // Build coverage for day
+    this.rebuildCoverage(night);
+
+    // Cosmetics
+    this.game.ambientLight.visible = false;
+  }
+
   render(dt) {
     if (this.level) {
       for (let [thing,_] of this.level.things)
@@ -257,6 +294,8 @@ class GameController {
     this.app.renderer.setScissorTest(true);
     this.app.renderer.setClearColor(DAY_CLEARCOLOR, 1);
 
+    this.setupDayScene();
+
     this.game.composer.render(dt);
 
     if (this.level.hasNight) {
@@ -265,6 +304,8 @@ class GameController {
       this.app.renderer.setScissor(width, 0, width, this.app.height);
       this.app.renderer.setScissorTest(true);
       this.app.renderer.setClearColor(NIGHT_CLEARCOLOR, 1);
+
+      this.setupNightScene();
 
       //this.app.renderer.render(this.game.scene, this.game.camera);
       this.game.composer.render();

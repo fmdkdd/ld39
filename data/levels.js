@@ -75,10 +75,10 @@ const LEVELS = [
     generators: 'WB',
     hasNight: true,
     map: `..
-          W.
+          .W
           1.
           ..
-          2B
+          1B
           ..`,
   },
 

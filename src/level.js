@@ -116,49 +116,94 @@ class Level {
     // In the end, we compare the power counter to the consumer size, and report
     // any discrepancy.
 
-    let counters = new Map();
+    let day_counter = new Map();
+    let night_counter = new Map();
     for (let th of this.things.keys()) {
-      if (th instanceof Consumer ||
-          th instanceof Battery) {
-        counters.set(th, 0);
+      if (th instanceof Consumer) {
+        day_counter.set(th, 0);
+        night_counter.set(th, 0);
+      }
+      else if (th instanceof Battery) {
+        day_counter.set(th, 0);
       }
     }
 
-    // Let the generator add to the power counters
-    // Distribute power from the turbine and panel first,
-    // since 1) the battery has to be powered by one of them,
-    // and 2) the battery will distribute the remaining power.
+    // Distribute day power to consurmers and batteries
     for (let th of this.things.keys()) {
       if (th instanceof WindTurbine ||
           th instanceof SolarPanel) {
-        th.distributePower(this, counters, this.hasNight);
+        th.distributeDayPower(this, day_counter);
       }
     }
 
-    for (let th of this.things.keys()) {
-      if (th instanceof Battery) {
-        th.distributePower(this, counters);
+    // batteries don't distribute power in the day
+
+    // Distribute night power
+    if (this.hasNight) {
+
+      // Distribute power from the turbines and panels first,
+      // since the batteries will distribute the remaining power.
+      for (let th of this.things.keys()) {
+        if (th instanceof WindTurbine ||
+            th instanceof SolarPanel) {
+          th.distributeNightPower(this, night_counter);
+        }
+      }
+
+      // Distribute power from powered batteries
+      for (let th of this.things.keys()) {
+        if (th instanceof Battery) {
+          let powered = day_counter.get(th) > 0;
+          if (powered) {
+            th.distributeNightPower(this, night_counter);
+          }
+        }
       }
     }
 
     // Gather any mispowered (unpowered/overloaded) consumer or battery, with
     // the current value
-    let mispowered = [];
-    for (let [thing, power] of counters.entries()) {
+    let mispowered_day = collectMispowered(day_counter);
+
+    // If there are no mispowered consumers, the level is solved!
+    let solved = true;
+    for (let {thing} of mispowered_day) {
       if (thing instanceof Consumer) {
-        if (thing.size !== power) {
-          mispowered.push({thing, current_power: power});
-        }
-      } else if (thing instanceof Battery) {
-        if (power === 0) {
-          mispowered.push({thing, current_power: power});
+        solved = false;
+        break;
+      }
+    }
+
+    // If it's a night level, check there are no unpowered night consumers
+    let mispowered_night = [];
+    if (this.hasNight) {
+      mispowered_night = collectMispowered(night_counter);
+
+      for (let {thing} of mispowered_night) {
+        if (thing instanceof Consumer) {
+          solved = false;
+          break;
         }
       }
     }
-    // If there are no mispowered consumers, the level is solved!
-    let solved = mispowered.length === 0;
 
-    return {solved, mispowered};
+    return {solved, mispowered_day, mispowered_night};
   }
 
+}
+
+function collectMispowered(counter) {
+  let mispowered = [];
+  for (let [thing, power] of counter.entries()) {
+    if (thing instanceof Consumer) {
+      if (thing.size !== power) {
+        mispowered.push({thing, current_power: power});
+      }
+    } else if (thing instanceof Battery) {
+      if (power === 0) {
+        mispowered.push({thing, current_power: power});
+      }
+    }
+  }
+  return mispowered;
 }

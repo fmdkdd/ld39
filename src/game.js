@@ -146,9 +146,6 @@ class Game
       else {
         this.putNewThing(thing, pos);
       }
-
-      if (thing instanceof Generator)
-        this.updateCoverage(thing, pos);
     });
 
     document.addEventListener('level removed thing', ev => {
@@ -243,7 +240,7 @@ class Game
     this.scene.add(root);
   }
 
-  updateCoverage(thing, gridPos)
+  updateCoverage(thing, gridPos, night)
   {
     // Remove previous coverage
     const oldCoverage = thing.model.getObjectByName('coverage');
@@ -253,7 +250,7 @@ class Game
     const coverage = new THREE.Object3D();
     coverage.name = 'coverage';
 
-    for (let tile of thing.getPoweredCells(gridPos[0], gridPos[1], false)) // TODO night
+    for (let tile of thing.getPoweredCells(gridPos[0], gridPos[1], night))
     {
       const outside = tile[0] < 0 || tile[0] >= this.tiles[0] || tile[1] < 0 || tile[1] >= this.tiles[1];
       const opacity = outside ? 0.2 : 0.5;
@@ -275,7 +272,6 @@ class Game
   {
     const worldPos = this.gridToWorld(gridPos[0], gridPos[1]);
     thing.model.position.set(worldPos[0], HELD_THING_VERTICAL_OFFSET, worldPos[1]);
-    this.updateCoverage(thing, gridPos);
   }
 
   putParticleCloud(x, y)
