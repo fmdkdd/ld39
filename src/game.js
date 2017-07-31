@@ -30,6 +30,19 @@ function getGenerator(object)
   return null;
 }
 
+// Check if the object has an ancestor tagged as cosmetic
+function isCosmetic(object)
+{
+  do {
+    if (object.cosmetic)
+      return true;
+
+    object = object.parent;
+  } while(object.parent);
+
+  return false;
+}
+
 const TILE_SIZE = 0.2;
 const THING_SCALE = 0.5;
 
@@ -249,6 +262,7 @@ class Game
 
     const coverage = new THREE.Object3D();
     coverage.name = 'coverage';
+    coverage.cosmetic = true;
 
     for (let tile of thing.getPoweredCells(gridPos[0], gridPos[1], night))
     {
@@ -355,6 +369,10 @@ class Game
 
     for (let inter of intersections)
     {
+      // Ignore attached objects (particles, grid...)
+      if (isCosmetic(inter.object))
+        continue;
+
       // Generator
       if (!this.pickingResult.generator && getGenerator(inter.object))
       {
