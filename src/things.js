@@ -6,7 +6,7 @@ class Thing {
     this.name = name;
   }
 
-  render(dt) {
+  render(dt, day) {
   }
 
 }
@@ -134,6 +134,9 @@ class WindTurbine extends Generator {
     // emit power
     cells.shift();
 
+    // keep count of time for animating the blades
+    this.t = 0;
+
     return cells;
   }
 
@@ -168,8 +171,10 @@ class WindTurbine extends Generator {
     });
   }
 
-  render(dt) {
-    this.model.getObjectByName('blades').rotation.y += dt * 0.5;
+  render(dt, day) {
+    // Rotate the blades, different speeds for day and night
+    this.t += dt;
+    this.model.getObjectByName('blades').rotation.y = this.t * (day ? 1 : 0.25);
   }
 }
 

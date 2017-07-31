@@ -235,7 +235,7 @@ class GameController {
     }
   }
 
-  setupDayScene() {
+  setupDayScene(dt) {
     // Visual feedback for mispowered cells
     this.validationFeedback(this.validationResult.mispowered_day);
 
@@ -244,9 +244,15 @@ class GameController {
 
     // Cosmetics
     this.game.ambientLight.visible = true;
+
+    // Type-specific rendering
+    if (this.level) {
+      for (let [thing,_] of this.level.things)
+        thing.render(dt, true);
+    }
   }
 
-  setupNightScene() {
+  setupNightScene(dt) {
     // Visual feedback for mispowered cells
     this.validationFeedback(this.validationResult.mispowered_night);
 
@@ -255,13 +261,15 @@ class GameController {
 
     // Cosmetics
     this.game.ambientLight.visible = false;
+
+    // Type-specific rendering
+    if (this.level) {
+      for (let [thing,_] of this.level.things)
+        thing.render(dt, false);
+    }
   }
 
   render(dt) {
-    if (this.level) {
-      for (let [thing,_] of this.level.things)
-        thing.render(dt);
-    }
 
     this.game.render(dt);
 
@@ -293,7 +301,7 @@ class GameController {
     this.app.renderer.setScissorTest(true);
     this.app.renderer.setClearColor(DAY_CLEARCOLOR, 1);
 
-    this.setupDayScene();
+    this.setupDayScene(dt);
 
     this.game.composer.render(dt);
 
@@ -304,7 +312,7 @@ class GameController {
       this.app.renderer.setScissorTest(true);
       this.app.renderer.setClearColor(NIGHT_CLEARCOLOR, 1);
 
-      this.setupNightScene();
+      this.setupNightScene(dt);
 
       //this.app.renderer.render(this.game.scene, this.game.camera);
       this.game.composer.render(dt);
