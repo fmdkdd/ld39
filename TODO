@@ -5,8 +5,6 @@
 - no smoke puff after 100 particles have been emitted (because we don't remove them?)
 
 @fmdkdd:
-- sound effects
-- background music
 - add explanations below the game
 
 
@@ -37,3 +35,5 @@ DONE:
 - adjust camera to see whole levels (maybe add camera data in level)
 - add more levels
 - visual feedback for POWERED battery (we forgot that!)
+- sound effects
+- background music

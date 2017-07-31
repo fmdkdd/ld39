@@ -5,6 +5,8 @@ STATES.Main = {
     window.G = this.gameController = new GameController(this.app);
     this.gameController.loadLevel(2);
     this.pointer = {x:0, y:0};
+    let music = this.app.music.play('happy-clouds', true);
+    this.app.music.setVolume(music, 0.2);
   },
 
   render(dt) {
@@ -70,6 +72,7 @@ window.addEventListener('DOMContentLoaded', function main() {
       this.sound.alias('pickup-scaled', 'pickup', .1, 1);
       this.sound.alias('putdown-scaled', 'putdown', .12, 1);
       this.sound.alias('rotate-scaled', 'rotate', .05, 1);
+      this.loadSounds('happy-clouds');
     },
 
     ready() {
