@@ -309,20 +309,30 @@ class Game
     thing.model.position.set(worldPos[0], HELD_THING_VERTICAL_OFFSET, worldPos[1]);
   }
 
+  // Instantiate the particle system on demand
+  // (crash if done in the constructor, no idea why)
+  createParticleSystem(texturePath, blendMode)
+  {
+    if (this.dustParticles)
+      return;
+
+    const particles = new SPE.Group({
+      texture: {
+        value: THREE.ImageUtils.loadTexture(texturePath)
+      },
+      blending: THREE.MinEquation,
+      maxParticleCount: 10000
+    });
+
+    particles.mesh.position.set(0, 0, 0);
+    this.scene.add(particles.mesh);
+    return particles;
+  }
+
   putParticleCloud(x, y)
   {
-    if (!this.particles)
-    {
-      this.particles = new SPE.Group({
-        texture: {
-          value: THREE.ImageUtils.loadTexture('data/dust.png')
-        },
-        maxParticleCount: 100
-      });
-
-      this.particles.mesh.position.set(0, 0, 0);
-      this.scene.add(this.particles.mesh);
-    }
+    if (!this.dustParticles)
+      this.dustParticles = this.createParticleSystem('data/dust.png');
 
     const pos = this.gridToWorld(x, y);
 
@@ -354,9 +364,51 @@ class Game
       duration: 0.25
     });
 
-    this.particles.addEmitter(emitter);
+    this.dustParticles.addEmitter(emitter);
 
-    //setTimeout(() => this.particles.removeEmitter(emitter), 10000);
+    //setTimeout(() => this.dustParticles.removeEmitter(emitter), 10000);
+  }
+
+  // Show smoke particles to represent overpowered consumers
+  showSmoke(thing, x, y, visible)
+  {
+    if (!this.smokeParticles)
+      this.smokeParticles = this.createParticleSystem('data/smoke.png');
+
+    if (!thing.model.smoke)
+    {
+      const pos = this.gridToWorld(x, y);
+
+      const emitter = new SPE.Emitter({
+        maxAge: {
+          value: 3
+        },
+        position: {
+          value: new THREE.Vector3(pos[0], 0.05, pos[1]),
+          spread: new THREE.Vector3(0.05, 0.05, 0.05)
+        },
+        velocity: {
+          value: new THREE.Vector3(0, 0.1, 0)
+        },
+        opacity: {
+          value: [0.8, 0]
+        },
+        size: {
+          value: [0.03, 0.1]
+        },
+        particleCount: 5
+      });
+
+      this.smokeParticles.addEmitter(emitter);
+
+      // Keep a reference in the model for convenience
+      thing.model.smoke = emitter;
+    }
+
+    if (visible)
+      thing.model.smoke.enable();
+    else
+      thing.model.smoke.disable();
   }
 
   getTileAt(x, y) {
@@ -365,9 +417,11 @@ class Game
 
   render(dt) {
 
-    // Update live particle emitter
-    if (this.particles)
-      this.particles.tick(dt);
+    // Update live particle groups
+    if (this.dustParticles)
+      this.dustParticles.tick(dt);
+    if (this.smokeParticles)
+      this.smokeParticles.tick(dt);
   }
 
   updatePicking(point, night) {

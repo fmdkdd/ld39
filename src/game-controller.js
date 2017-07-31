@@ -218,9 +218,13 @@ class GameController {
     for (let [thing, pos] of this.level.things) {
       if (thing instanceof Consumer || thing instanceof Battery) {
 
-        const isMispowered = mispowered.some(m => m.thing === thing);
+        const ownMispowered = mispowered.find(m => m.thing === thing);
 
-        this.game.outlineThing(thing, !isMispowered);
+        // Red/green outlien depending on the current status
+        this.game.outlineThing(thing, !ownMispowered);
+
+        // Put smoke on overpowered consumers
+        this.game.showSmoke(thing, pos[0], pos[1], !!ownMispowered && ownMispowered.current_power > thing.size);
       }
     }
   }
