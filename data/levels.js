@@ -25,20 +25,18 @@ const LEVELS = [
 
   {
     generators: '',
-    map: `W....
+    map: `....W
           .11..
           .1.1.
-          .....
-          ..S..`,
+          ....S`,
   },
 
   {
     generators: 'WWS',
-    map: `W.W.S
-          .....
+    map: `W...W
           .221.
           .2.1.
-          .....`,
+          ....S`,
   },
 
   {
@@ -52,11 +50,11 @@ const LEVELS = [
 
   {
     generators: 'WWSS',
-    map: `W.W..
+    map: `W...W
           ..21.
           .2#1.
           ..21.
-          S.S..`,
+          S...S`,
   },
 
   {
