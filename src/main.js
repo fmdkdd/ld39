@@ -14,8 +14,8 @@ STATES.Main = {
   pointermove(event) {
 
     // Update position relative to the canvas
-    this.pointer.x = event.original.clientX - this.app.renderer.domElement.offsetLeft;
-    this.pointer.y = event.original.clientY - this.app.renderer.domElement.offsetTop;
+    this.pointer.x = event.original.clientX - this.app.container.offsetLeft;
+    this.pointer.y = event.original.clientY - this.app.container.offsetTop;
 
     this.gameController.pointermove(this.pointer);
   },
@@ -80,10 +80,10 @@ window.addEventListener('DOMContentLoaded', function main() {
         this.renderer.domElement.style.height = this.height * this.scale + 'px';
         this.renderer.domElement.id = 'canvas';
 
-        let container = document.getElementById('container');
-        container.appendChild(this.renderer.domElement);
-        container.style.width = this.width * this.scale + 'px';
-        container.style.height = this.height * this.scale + 'px';
+        this.container = document.getElementById('container');
+        this.container.appendChild(this.renderer.domElement);
+        this.container.style.width = this.width * this.scale + 'px';
+        this.container.style.height = this.height * this.scale + 'px';
 
         // Go to default state
         this.setState(STATES.Main);
