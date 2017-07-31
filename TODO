@@ -12,8 +12,6 @@ UNASSIGNED:
 - title screen?  (can use HTML on top of canvas)
 - end screen?    (can use HTML on top of canvas)
 - visual polish (transitions)
-- holding the mouse on a wind turbine stops it from rotating
-- rotating a thing resets all wind turbines motor rotation
 - rotated solar panels are all black (minor, due to light direction)
 
 Can fix AFTER deadline (don't prioritize):
@@ -37,3 +35,5 @@ DONE:
 - visual feedback for POWERED battery (we forgot that!)
 - sound effects
 - background music
+- holding the mouse on a wind turbine stops it from rotating
+- rotating a thing resets all wind turbines motor rotation
