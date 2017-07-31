@@ -42,8 +42,8 @@ const LEVELS = [
   {
     generators: 'WWSS',
     map: `W...W
-          ..31.
-          .2.1.
+          ..21.
+          .2#1.
           ..21.
           S...S`,
   },
@@ -51,8 +51,8 @@ const LEVELS = [
   {
     generators: 'WWSS',
     map: `W...W
-          ..21.
-          .2#1.
+          ..31.
+          .2.1.
           ..21.
           S...S`,
   },
