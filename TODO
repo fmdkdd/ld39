@@ -1,10 +1,7 @@
 @merwan:
 - shadows are too strong (and too large?)
-- outline feedback on consumers (same effect)
-- make rock grey (looks interactable as is)
 
 @fmdkdd:
-- validate day and night separately (rules are different)
 - add more levels
 - sound effects
 - background music
@@ -28,3 +25,6 @@ done:
 - fix models rotation (all models should face the same direction)
 - adjust models scale
 - duplicate next level button in night levels (and too small, too high)
+- outline feedback on consumers (same effect)
+- make rock grey (looks interactable as is)
+- validate day and night separately (rules are different)
