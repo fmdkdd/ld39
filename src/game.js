@@ -119,7 +119,7 @@ class Game
 
     this.selectionPass = addOutline(0xFFFFFF, 1); // White outline around selected things
     this.poweredPass = addOutline(0x00FF00, 3); // Green outline around powered things
-    this.overpoweredPass = addOutline(0xFF0000, 3); // Red outline around overpowered things
+    this.mispoweredPass = addOutline(0xFF0000, 3); // Red outline around overpowered things
 
     const copyPass = new THREE.ShaderPass(THREE.CopyShader);
     copyPass.renderToScreen = true;
@@ -323,7 +323,7 @@ class Game
 
   // Instantiate the particle system on demand
   // (crash if done in the constructor, no idea why)
-  createParticleSystem(texturePath, blendMode)
+  createParticleSystem(texturePath)
   {
     if (this.dustParticles)
       return;
@@ -332,7 +332,7 @@ class Game
       texture: {
         value: THREE.ImageUtils.loadTexture(texturePath)
       },
-      blending: THREE.MinEquation,
+      blending: THREE.NormalBlending,
       maxParticleCount: 10000
     });
 
@@ -380,10 +380,10 @@ class Game
 
     // Program the removal of the emitter
     // XXX: sometimes make the particle engine crash
-    /*setTimeout(() => {
-      emitter.disable();
-      this.dustParticles.removeEmitter(emitter);
-    }, 2000);*/
+    setTimeout(() => {
+      //emitter.disable();
+      //this.dustParticles.removeEmitter(emitter);
+    }, 10000);
   }
 
   // Show smoke particles to represent overpowered consumers
@@ -413,7 +413,7 @@ class Game
         size: {
           value: [0.03, 0.1]
         },
-        particleCount: 5
+        particleCount: 8
       });
 
       this.smokeParticles.addEmitter(emitter);
@@ -527,15 +527,31 @@ class Game
     }
   }
 
-  outlineThing(thing, powered)
+  outlineThing(thing, powered, requiredPower, currentPower)
   {
     if (!thing)
       return;
 
-    if (powered)
-      this.poweredPass.selectedObjects.push(thing.model);
+    // Consumers: outline houses individually
+    if (thing instanceof Consumer)
+    {
+      const houses = thing.model.getObjectByName('model').children;
+
+      const numPowered = currentPower <= requiredPower ? currentPower : 0;
+
+      for (let i = 0; i < numPowered; ++i)
+        this.poweredPass.selectedObjects.push(houses[i]);
+
+      for (let i = numPowered; i < houses.length; ++i)
+        this.mispoweredPass.selectedObjects.push(houses[i]);
+    }
     else
-      this.overpoweredPass.selectedObjects.push(thing.model);
+    {
+      if (powered)
+        this.poweredPass.selectedObjects.push(thing.model);
+      else
+        this.mispoweredPass.selectedObjects.push(thing.model);
+    }
   }
 
   clearOutline(thing)
@@ -543,8 +559,21 @@ class Game
     if (!thing)
       return;
 
-    this.poweredPass.selectedObjects.splice(this.poweredPass.selectedObjects.indexOf(thing.model), 1);
-    this.overpoweredPass.selectedObjects.splice(this.overpoweredPass.selectedObjects.indexOf(thing.model), 1);
+    if (thing instanceof Consumer)
+    {
+      const houses = thing.model.getObjectByName('model').children;
+
+      for (let i = 0; i < houses.length; ++i)
+      {
+        this.poweredPass.selectedObjects.splice(this.poweredPass.selectedObjects.indexOf(houses[i]), 1);
+        this.mispoweredPass.selectedObjects.splice(this.mispoweredPass.selectedObjects.indexOf(houses[i]), 1);
+      }
+    }
+    else
+    {
+      this.poweredPass.selectedObjects.splice(this.poweredPass.selectedObjects.indexOf(thing.model), 1);
+      this.mispoweredPass.selectedObjects.splice(this.mispoweredPass.selectedObjects.indexOf(thing.model), 1);
+    }
   }
 
   eventToCameraPos(event)

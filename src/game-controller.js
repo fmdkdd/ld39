@@ -58,7 +58,7 @@ class GameController {
     this.heldThing = null;
     this.game.loadLevel(this.level);
     this.game.hideNextLevelButton();
-    //this.game.showNextLevelButton();
+    this.game.showNextLevelButton();
     this.validate();
   }
 
@@ -226,9 +226,10 @@ class GameController {
       if (thing instanceof Consumer || thing instanceof Battery) {
 
         const ownMispowered = mispowered.find(m => m.thing === thing);
+        const currentPower = ownMispowered ? ownMispowered.current_power : thing.size;
 
-        // Red/green outlien depending on the current status
-        this.game.outlineThing(thing, !ownMispowered);
+        // Red/green outline depending on the current status
+        this.game.outlineThing(thing, !ownMispowered, thing.size, currentPower);
 
         // Put smoke on overpowered consumers
         this.game.showSmoke(thing, pos[0], pos[1], !!ownMispowered && ownMispowered.current_power > thing.size);
