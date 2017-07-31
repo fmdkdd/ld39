@@ -110,15 +110,51 @@ const LEVELS = [
           W...B`,
   },
 
-  // {
-  //   generators: 'WWSS',
-  //   hasNight: true,
-  //   map: `W.W..
-  //         1..21
-  //         2..#1
-  //         1..21
-  //         S.S.B`,
-  // },
+  {
+    generators: '',
+    hasNight: true,
+    map: `W...W
+          .111.
+          ..1..
+          S....
+          .111.
+          S...B`,
+  },
+
+  {
+    generators: '',
+    hasNight: true,
+    map: `W...W
+          .111.
+          ..1#.
+          .##1.
+          .111.
+          W...B`,
+  },
+
+  {
+    generators: '',
+    hasNight: true,
+    map: `S...B
+          .....
+          .212.
+          .....
+          .2.2.
+          W.W.W`,
+  },
+
+  {
+    generators: '',
+    hasNight: true,
+    map: `WWWWB
+          .SS..
+          .11..
+          .....
+          .2.2.
+          .131.
+          .2.2.
+          .....`,
+  },
 
   // Template
   // {
