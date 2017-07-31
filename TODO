@@ -17,6 +17,7 @@ unassigned:
 - visual feedback for POWERED battery (we forgot that!)
 - highlight is applied to particles (maybe removing the particles should fix it?)
 - particles stay between levels
+- no smoke puff after 100 particles have been emitted (because we don't remove them?)
 
 
 done:
