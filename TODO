@@ -13,9 +13,11 @@
 
 
 unassigned:
-- adjust camera to see whole levels (maybe add camera data in level)
-- title screen?
+- title screen?  (can use HTML on top of canvas)
+- end screen?    (can use HTML on top of canvas)
 - visual polish (transitions)
+- holding the mouse on a wind turbine stops it from rotating
+- rotating a thing resets all wind turbines motor rotation
 
 
 done:
@@ -29,3 +31,4 @@ done:
 - outline feedback on consumers (same effect)
 - make rock grey (looks interactable as is)
 - validate day and night separately (rules are different)
+- adjust camera to see whole levels (maybe add camera data in level)
