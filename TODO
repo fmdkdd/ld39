@@ -1,22 +1,18 @@
 @merwan:
 - shadows are too strong (and too large?)
-- highlight is applied to particles (maybe removing the particles should fix it?)
-- particles stay between levels
-- no smoke puff after 100 particles have been emitted (because we don't remove them?)
 
 @fmdkdd:
-- add explanations below the game
-
+- level sound
+-
 
 UNASSIGNED:
-- title screen?  (can use HTML on top of canvas)
-- visual polish (transitions)
 - rotated solar panels are all black at night (minor, due to light direction)
 - moon is in front of things in last level
 
 Can fix AFTER deadline (don't prioritize):
 (We can still fix bugs after the deadline, if they don't impact gameplay)
 - looks like we have a large memory leak
+- weird particles bug that may be driver-specific
 
 
 DONE:
@@ -38,3 +34,6 @@ DONE:
 - holding the mouse on a wind turbine stops it from rotating
 - rotating a thing resets all wind turbines motor rotation
 - end screen?    (can use HTML on top of canvas)
+- add explanations below the game
+- title screen?  (can use HTML on top of canvas)
+- visual polish (transitions)
