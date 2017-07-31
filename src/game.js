@@ -223,19 +223,19 @@ class Game
   }
 
   showNextLevelButton() {
-    this.nextLevelButton.style.display = 'inline';
+    this.nextLevelButton.style.opacity = 1;
   }
 
   hideNextLevelButton() {
-    this.nextLevelButton.style.display = 'none';
+    this.nextLevelButton.style.opacity = 0;
   }
 
   showPreviousLevelButton() {
-    this.previousLevelButton.style.display = 'inline';
+    this.previousLevelButton.style.opacity = 1;
   }
 
   hidePreviousLevelButton() {
-    this.previousLevelButton.style.display = 'none';
+    this.previousLevelButton.style.opacity = 0;
   }
 
   // Will return a new objects with the removed scene content as children

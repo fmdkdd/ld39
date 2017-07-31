@@ -47,6 +47,8 @@ body {
   border-radius: 100%;
 
   animation: pulse 2s infinite;
+  transition: opacity 2s linear;
+  opacity: 0;
 }
 
 #next-level:hover, #previous-level:hover {
@@ -82,6 +84,8 @@ body {
   border-radius: 100%;
 
   transform: scale(-1,1);
+  transition: opacity 2s linear;
+  opacity: 0;
 }
 
 #end-screen {
