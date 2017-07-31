@@ -74,12 +74,21 @@ const LEVELS = [
   {
     generators: 'WB',
     hasNight: true,
-    map: `..
-          .W
+    map: `.W
           1.
           ..
           1B
           ..`,
+  },
+
+  {
+    generators: '',
+    hasNight: true,
+    map: `.WB..
+          ...1.
+          ...1.
+          .112.
+          ....W`,
   },
 
   {
