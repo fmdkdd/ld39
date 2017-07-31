@@ -244,6 +244,8 @@ class GameController {
 
     // Cosmetics
     this.game.ambientLight.visible = true;
+    this.game.dayLight.visible = true;
+    this.game.nightLight.visible = false;
 
     // Type-specific rendering
     if (this.level) {
@@ -260,7 +262,9 @@ class GameController {
     this.rebuildCoverage(true);
 
     // Cosmetics
+    this.game.nightLight.visible = true;
     this.game.ambientLight.visible = false;
+    this.game.dayLight.visible = false;
 
     // Type-specific rendering
     if (this.level) {

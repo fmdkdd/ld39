@@ -130,10 +130,16 @@ class Game
     this.ambientLight = new THREE.AmbientLight(0x404040);
     this.scene.add(this.ambientLight);
 
-    this.dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
-    this.dirLight.position.set(4, 3, 4);
-    this.dirLight.castShadow = true;
-    this.scene.add(this.dirLight);
+    this.dayLight = new THREE.DirectionalLight( 0xffffff, 1);
+    this.dayLight.position.set(10, 10, 10);
+    this.dayLight.castShadow = true;
+    this.scene.add(this.dayLight);
+
+    this.nightLight = new THREE.DirectionalLight( 0x819def, 1.5);
+    this.nightLight.position.set(-10, 10, 10);
+    this.nightLight.castShadow = true;
+    this.scene.add(this.nightLight);
+
     // Lighter shadows:
     // https://stackoverflow.com/questions/40938238/shadow-darkness-in-threejs-and-object-opacity
 
