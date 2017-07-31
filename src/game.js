@@ -169,6 +169,9 @@ class Game
     this.nextLevelButton = document.getElementById('next-level');
     this.hideNextLevelButton();
 
+    this.previousLevelButton = document.getElementById('previous-level');
+    this.hidePreviousLevelButton();
+
     // Events coming from the model
 
     document.addEventListener('init terrain', ev => {
@@ -208,6 +211,14 @@ class Game
 
   hideNextLevelButton() {
     this.nextLevelButton.style.display = 'none';
+  }
+
+  showPreviousLevelButton() {
+    this.previousLevelButton.style.display = 'inline';
+  }
+
+  hidePreviousLevelButton() {
+    this.previousLevelButton.style.display = 'none';
   }
 
   unloadLevel(level) {

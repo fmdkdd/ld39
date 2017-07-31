@@ -36,7 +36,7 @@ body {
   animation: pulse 2s infinite;
 }
 
-#next-level:hover {
+#next-level:hover, #previous-level:hover {
   box-shadow: 0 0 10px #fff;
   animation: none;
 }
@@ -51,6 +51,24 @@ body {
   100% {
       box-shadow: 0 0 0 0 rgba(255,255,255, 0);
   }
+}
+
+#previous-level {
+  position: absolute;
+  z-index: 100;
+  bottom: 30px;
+  left: 30px;
+
+  width: 64px;
+  image-rendering: optimizeSpeed;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: -o-crisp-edges;
+  image-rendering: pixelated;
+  -ms-interpolation-mode: nearest-neighbor;
+  border-radius: 100%;
+
+  transform: scale(-1,1);
 }
 
 #end-screen {

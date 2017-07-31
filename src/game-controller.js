@@ -7,6 +7,9 @@ class GameController {
     this.game = new Game(this.app);
     this.heldThing = null;
     this.currentLevel = 0;
+    this.canInteract = false;
+
+    this.endScreen = document.getElementById('end-screen');
 
     document.addEventListener('level put thing', ev => this.validate());
     document.addEventListener('level removed thing', ev => this.validate());
@@ -41,15 +44,17 @@ class GameController {
 
     document.getElementById('next-level').addEventListener('mousedown', ev => {
       if (ev.button === 0) {
-
-        if (this.currentLevel < LEVELS.length-1) {
-          this.nextLevel();
-        } else {
-          // Show end message if there no more levels
-          this.showEndScreen();
-        }
+        this.nextLevel();
       }
       ev.preventDefault(); // prevent drag and dropping the image
+    });
+
+    document.getElementById('previous-level').addEventListener('mousedown', ev => {
+      if (ev.button === 0) {
+        this.previousLevel();
+      }
+
+      ev.preventDefault();
     });
   }
 
@@ -62,8 +67,16 @@ class GameController {
     this.heldThing = null;
     this.game.loadLevel(this.level);
     this.game.hideNextLevelButton();
-    //this.game.showNextLevelButton();
+
+    if (this.currentLevel > 0) {
+      this.game.showPreviousLevelButton();
+    } else {
+      this.game.hidePreviousLevelButton();
+    }
+
     this.validate();
+
+    this.canInteract = true;
   }
 
   // Proceed to next level, or to exit screen
@@ -73,7 +86,17 @@ class GameController {
       // TODO: smooth transition?
       this.loadLevel(next);
     } else {
-      // TODO: No more levels, exit screen?
+      this.showEndScreen();
+    }
+  }
+
+  previousLevel() {
+    const previous = this.currentLevel - 1;
+    if (this.endScreen.style.display == 'block') {
+      this.hideEndScreen();
+      this.game.showNextLevelButton();
+    } else if (previous >= 0) {
+      this.loadLevel(previous);
     }
   }
 
@@ -103,7 +126,14 @@ class GameController {
   }
 
   showEndScreen() {
-    document.getElementById('end-screen').style.display = 'block';
+    this.endScreen.style.display = 'block';
+    this.canInteract = false;
+    this.game.hideNextLevelButton();
+  }
+
+  hideEndScreen() {
+    this.endScreen.style.display = 'none';
+    this.canInteract = true;
   }
 
   // Put the held item at (x,y) in the level.  Do nothing if we have no held item.
@@ -171,6 +201,7 @@ class GameController {
   }
 
   pointermove(pointer) {
+    if (!this.canInteract) return;
 
     this.game.updatePicking(pointer, this.level.hasNight);
 
@@ -218,6 +249,8 @@ class GameController {
   }
 
   leftclick() {
+    if (!this.canInteract) return;
+
     if (this.hoveredTile) {
       let [x,y] = this.hoveredTile.coords;
       this.clickAt(x,y);
@@ -225,6 +258,8 @@ class GameController {
   }
 
   rightclick() {
+    if (!this.canInteract) return;
+
     if (this.hoveredTile) {
       let [x,y] = this.hoveredTile.coords;
       this.rotateThingAt(x,y);
