@@ -51,6 +51,7 @@ const ModelScales = {
   WindTurbine: 0.265,
   Battery: .7,
   SolarPanel: .5,
+  Obstacle: .9,
 }
 
 let THING_MODELS;
