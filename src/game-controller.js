@@ -234,7 +234,7 @@ class GameController {
 
     if (this.level.hasNight) {
       width /= 2;
-      frustrum = 2;
+      frustrum = 1.5;
     }
 
     let aspect = width / height;
