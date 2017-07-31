@@ -131,7 +131,7 @@ class Game
     this.scene.add(this.ambientLight);
 
     this.dayLight = new THREE.DirectionalLight( 0xffffff, 1);
-    this.dayLight.position.set(10, 10, 10);
+    this.dayLight.position.set(10, 15, 10);
     this.dayLight.castShadow = true;
     this.scene.add(this.dayLight);
 
@@ -187,8 +187,9 @@ class Game
     // Remove all objects from the previous level, if any
     for (let [thing,_] of level.things) {
       this.scene.remove(thing.model);
-      this.terrain.forEach(t => this.scene.remove(t));
     }
+    this.terrain.forEach(t => this.scene.remove(t));
+    this.scene.remove(this.dirt);
   }
 
   loadLevel(level) {
@@ -217,6 +218,12 @@ class Game
 
         this.terrain.push(tile);
       }
+
+    // A big slab of dirt!
+    const dirtGeometry = new THREE.BoxGeometry(this.tiles[0] * TILE_SIZE, .05, this.tiles[1] * TILE_SIZE);
+    this.dirt = new THREE.Mesh(dirtGeometry, new THREE.MeshLambertMaterial({ color: 0x854c30 }));
+    this.dirt.position.y = -0.05
+    this.scene.add(this.dirt);
   }
 
   putNewThing(thing, pos)
