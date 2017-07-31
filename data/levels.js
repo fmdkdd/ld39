@@ -82,7 +82,7 @@ const LEVELS = [
   {
     generators: '',
     hasNight: true,
-    map: `.WB..
+    map: `W...B
           ...1.
           ...1.
           .112.
@@ -90,13 +90,48 @@ const LEVELS = [
   },
 
   {
-    generators: 'WWSS',
+    generators: '',
     hasNight: true,
-    map: `W.W..
-          1..21
-          2..#1
-          1..21
-          S.S.B`,
+    map: `S.1B
+          .1..
+          ..1.
+          ..1.
+          .1.S`,
   },
+
+  {
+    generators: '',
+    hasNight: true,
+    map: `W...S
+          ..2..
+          .2...
+          .1...
+          .11..
+          W...B`,
+  },
+
+  // {
+  //   generators: 'WWSS',
+  //   hasNight: true,
+  //   map: `W.W..
+  //         1..21
+  //         2..#1
+  //         1..21
+  //         S.S.B`,
+  // },
+
+  // Template
+  // {
+  //   generators: '',
+  //   hasNight: true,
+  //   map: `.WWWB
+  //         .SSSB
+  //         .....
+  //         ..21.
+  //         .2..1
+  //         .....
+  //         ..1..
+  //         .....`,
+  // },
 
 ];
