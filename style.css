@@ -102,3 +102,22 @@ body {
 
   display: none;
 }
+
+#info {
+  font-size: 18px;
+  color: #fff;
+
+  box-sizing: border-box;
+  width: 960px;
+  margin: auto;
+  padding: 0 10px;
+}
+
+a {
+  color: #ff8f8f;
+}
+
+footer {
+  text-align: right;
+  margin-top: 50px;
+}
