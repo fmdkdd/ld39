@@ -12,6 +12,8 @@ class GameController {
     document.addEventListener('level put thing', ev => this.validate());
     document.addEventListener('level removed thing', ev => this.validate());
     document.addEventListener('thing rotated', ev => {
+      this.app.playSound('rotate-scaled');
+
       this.validate();
 
       let {thing} = ev.detail;
@@ -87,6 +89,8 @@ class GameController {
   // Put the held item at (x,y) in the level.  Do nothing if we have no held item.
   putHeldThingAt(x,y) {
     if (this.heldThing) {
+      this.app.playSound('putdown-scaled');
+
       this.level.putThingAt(this.heldThing, x,y);
       this.heldThing = null;
 
@@ -114,6 +118,8 @@ class GameController {
 
     // keep the model visible even though it has been removed from the logic grid
     this.heldThing.model.visible = true;
+
+    this.app.playSound('pickup-scaled');
   }
 
   // Take generator at (x,y) in level and put it in the currently held slot

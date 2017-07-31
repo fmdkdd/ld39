@@ -63,6 +63,13 @@ window.addEventListener('DOMContentLoaded', function main() {
 
     create() {
       MODELS.forEach(asset => this.loadData(asset));
+
+      this.loadSounds('pickup');
+      this.loadSounds('putdown');
+      this.loadSounds('rotate');
+      this.sound.alias('pickup-scaled', 'pickup', .1, 1);
+      this.sound.alias('putdown-scaled', 'putdown', .12, 1);
+      this.sound.alias('rotate-scaled', 'rotate', .05, 1);
     },
 
     ready() {
