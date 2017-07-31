@@ -7,7 +7,6 @@ class GameController {
     this.game = new Game(this.app);
     this.heldThing = null;
     this.currentLevel = 0;
-    this.currentLevelSolved = false;
 
     document.addEventListener('level put thing', ev => this.validate());
     document.addEventListener('level removed thing', ev => this.validate());
@@ -54,11 +53,10 @@ class GameController {
     }
     this.level = new Level(LEVELS[num]);
     this.currentLevel = num;
-    this.currentLevelSolved = false;
     this.heldThing = null;
     this.game.loadLevel(this.level);
     this.game.hideNextLevelButton();
-    this.game.showNextLevelButton();
+    //this.game.showNextLevelButton();
     this.validate();
   }
 
@@ -73,18 +71,38 @@ class GameController {
     }
   }
 
+  getMaxLevelSolved() {
+    return window.localStorage.getItem('maxSolvedLevel') || -1;
+  }
+
+  setMaxLevelSolved(level) {
+    window.localStorage.setItem('maxSolvedLevel',
+                                Math.max(level, this.getMaxLevelSolved()));
+  }
+
   validate() {
     if (this.level) {
       this.validationResult = this.level.validate();
 
       if (this.validationResult.solved) {
-        // once you've solved it once, that's enough
-        this.currentLevelSolved = true;
+        // Save level progression
+        this.setMaxLevelSolved(this.currentLevel);
+      }
 
-        // The level is solved, offer to proceed to next level
-        this.game.showNextLevelButton();
+      if (this.validationResult.solved || this.currentLevel <= this.getMaxLevelSolved()) {
+        if (this.currentLevel < LEVELS.length-1) {
+          // The level is solved, offer to proceed to next level
+          this.game.showNextLevelButton();
+        } else {
+          // Show end message if there no more levels
+          this.showEndScreen();
+        }
       }
     }
+  }
+
+  showEndScreen() {
+    // TODO:
   }
 
   // Put the held item at (x,y) in the level.  Do nothing if we have no held item.

@@ -2,8 +2,8 @@ let STATES = {};
 
 STATES.Main = {
   enter() {
-    window.G = this.gameController = new GameController(this.app);
-    this.gameController.loadLevel(2);
+    this.gameController = new GameController(this.app);
+    this.gameController.loadLevel(0);
     this.pointer = {x:0, y:0};
     let music = this.app.music.play('happy-clouds', true);
     this.app.music.setVolume(music, 0.2);
