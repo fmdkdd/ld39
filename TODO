@@ -9,7 +9,6 @@
 - sound effects
 - background music
 
-- duplicate next level button in night levels (and too small, too high)
 
 unassigned:
 - adjust camera to see whole levels (maybe add camera data in level)
@@ -27,3 +26,4 @@ done:
 - battery distributePower
 - fix models rotation (all models should face the same direction)
 - adjust models scale
+- duplicate next level button in night levels (and too small, too high)

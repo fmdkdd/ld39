@@ -71,14 +71,19 @@ window.addEventListener('DOMContentLoaded', function main() {
         // Init WebGL renderer
         this.renderer = new THREE.WebGLRenderer({
           antialias: this.smoothing,
-          alpha: true
+          alpha: true,
         });
         this.renderer.setClearColor(DAY_CLEARCOLOR);
         this.renderer.shadowMap.enabled = true;
         this.renderer.setSize(this.width, this.height, false);
         this.renderer.domElement.style.width = this.width * this.scale + 'px';
         this.renderer.domElement.style.height = this.height * this.scale + 'px';
-        this.container.appendChild(this.renderer.domElement);
+        this.renderer.domElement.id = 'canvas';
+
+        let container = document.getElementById('container');
+        container.appendChild(this.renderer.domElement);
+        container.style.width = this.width * this.scale + 'px';
+        container.style.height = this.height * this.scale + 'px';
 
         // Go to default state
         this.setState(STATES.Main);

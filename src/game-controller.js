@@ -37,7 +37,11 @@ class GameController {
       }
     });
 
-    document.addEventListener('next level clicked', ev => this.nextLevel());
+    document.getElementById('next-level').addEventListener('click', ev => {
+      if (ev.button === 0) {
+        this.nextLevel();
+      }
+    });
   }
 
   loadLevel(num) {
@@ -196,22 +200,12 @@ class GameController {
       this.game.highlightThing(this.highlightedThing, false);
       this.highlightedThing = null;
     }
-
-    // Hover effect for button under cursor
-    let button = this.game.pickButton();
-    if (this.game.pickButton()) {
-      this.game.nextLevelButton.material.color.setHex(0xffff00);
-    } else {
-      this.game.nextLevelButton.material.color.setHex(0xffffff);
-    }
   }
 
   leftclick() {
     if (this.hoveredTile) {
       let [x,y] = this.hoveredTile.coords;
       this.clickAt(x,y);
-    } else if (this.game.pickButton()) {
-      this.nextLevel();
     }
   }
 

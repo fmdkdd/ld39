@@ -3,7 +3,7 @@ body {
   margin: 0;
 }
 
-canvas {
+#canvas {
   image-rendering: optimizeSpeed;
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-optimize-contrast;
@@ -11,5 +11,29 @@ canvas {
   image-rendering: pixelated;
   -ms-interpolation-mode: nearest-neighbor;
   display: block;
+}
+
+#container {
+  position: relative;
   margin: 20px auto;
+}
+
+#next-level {
+  position: absolute;
+  z-index: 100;
+  bottom: 20px;
+  right: 20px;
+
+  width: 64px;
+  image-rendering: optimizeSpeed;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: -o-crisp-edges;
+  image-rendering: pixelated;
+  -ms-interpolation-mode: nearest-neighbor;
+  border-radius: 100%;
+}
+
+#next-level:hover {
+  box-shadow: 0 0 10px #fff;
 }

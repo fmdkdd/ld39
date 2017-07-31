@@ -116,18 +116,8 @@ class Game
     // Lighter shadows:
     // https://stackoverflow.com/questions/40938238/shadow-darkness-in-threejs-and-object-opacity
 
-    let texture = new THREE.TextureLoader().load( 'data/next-level-button2.png' );
-    texture.magFilter = THREE.NearestFilter;
-    texture.minFilter = THREE.NearestFilter;
-    let sprite = new THREE.Sprite(
-      new THREE.SpriteMaterial({map: texture, color: 0xffffff })
-    );
-    sprite.position.set(.8, 0, .3);
-    sprite.scale.multiplyScalar(0.2);
-    sprite.modelType = ModelTypes.NextLevelButton;
-    this.nextLevelButton = sprite;
-    sprite.visible = false;
-    this.scene.add(sprite);
+    this.nextLevelButton = document.getElementById('next-level');
+    this.hideNextLevelButton();
 
     // Events coming from the model
 
@@ -162,11 +152,11 @@ class Game
   }
 
   showNextLevelButton() {
-    this.nextLevelButton.visible = true;
+    this.nextLevelButton.style.display = 'inline';
   }
 
   hideNextLevelButton() {
-    this.nextLevelButton.visible = false;
+    this.nextLevelButton.style.display = 'none';
   }
 
   unloadLevel(level) {
