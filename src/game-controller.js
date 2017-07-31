@@ -43,6 +43,8 @@ class GameController {
     });
 
     document.getElementById('next-level').addEventListener('mousedown', ev => {
+      if (!this.level || this.oldLevelMovingOut || this.newLevelMovingIn)
+        return;
       if (ev.button === 0) {
         this.nextLevel();
       }
@@ -50,6 +52,8 @@ class GameController {
     });
 
     document.getElementById('previous-level').addEventListener('mousedown', ev => {
+      if (!this.level || this.oldLevelMovingOut || this.newLevelMovingIn)
+        return;
       if (ev.button === 0) {
         this.previousLevel();
       }
@@ -68,6 +72,7 @@ class GameController {
       this.game.hideNextLevelButton();
       this.validate();
 
+      this.game.showNextLevelButton();
       if (this.currentLevel > 0) {
         this.game.showPreviousLevelButton();
       } else {
