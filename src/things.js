@@ -216,6 +216,11 @@ class Battery extends Generator {
     super(`battery-${Thing.ID++}`);
   }
 
+  getPoweredCells() {
+    // no coverage
+    return []
+  }
+
   distributePower(level, counters) {
     // Distribute power to all connected components of neighboring
     // consumer, but only if the battery is powered during the day.

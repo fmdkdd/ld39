@@ -48,8 +48,9 @@ const ModelTypes = {
 };
 
 const ModelScales = {
-  WindTurbine: 0.625,
-  Battery: 0.5,
+  WindTurbine: 0.265,
+  Battery: .7,
+  SolarPanel: .5,
 }
 
 let THING_MODELS;
@@ -244,7 +245,7 @@ class Game
     else
     {
       model = loadModel(THING_MODELS[thing.constructor.name]);
-      model.scale.set(TILE_SIZE*THING_SCALE, TILE_SIZE*THING_SCALE,TILE_SIZE*THING_SCALE);
+      model.scale.multiplyScalar(TILE_SIZE * ModelScales[thing.constructor.name]);
     }
 
     model.name = 'model'; // To differentiate model from root
