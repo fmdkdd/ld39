@@ -72,22 +72,22 @@ class GameController {
     if (this.level) {
       let result = this.level.validate();
 
-      // Clear previous highlights
-      for (let tile of this.game.terrain) {
-        tile.material.emissive.setHex(0);
-      }
-
       this.game.hideNextLevelButton();
 
       // TODO: visual feedback could be that houses themselves are dark at
       // first, then they light up when they are powered.
-      for (let m of result.mispowered) {
-        // Get tile below thing
-        let [x,y] = this.level.getThingXY(m.thing);
-        let tile = this.game.getTileAt(x,y);
 
-        // Paint it red
-        tile.material.emissive.setHex(0x880000);
+      // Clear previous outlines
+      for (let [thing, _] of this.level.things)
+        this.game.clearOutline(thing);
+
+      for (let [thing, pos] of this.level.things) {
+        if (thing instanceof Consumer || thing instanceof Battery) {
+
+          const mispowered = result.mispowered.some(m => m.thing === thing);
+
+          this.game.outlineThing(thing, !mispowered);
+        }
       }
 
       // The level is solved, offer to proceed to next level

@@ -93,12 +93,20 @@ class Game
     const renderPass = new THREE.RenderPass(this.scene, this.camera);
     this.composer.addPass(renderPass);
 
-    this.outlinePass = new THREE.OutlinePass(new THREE.Vector2(this.app.width, this.app.height), this.scene, this.camera);
-    this.outlinePass.edgeStrength = 1;
-    this.outlinePass.edgeThickness = 0.25;
-    this.outlinePass.visibleEdgeColor.setHex(0xFFFFFF);
-    this.outlinePass.hiddenEdgeColor.setHex(0xFFFFFF);
-    this.composer.addPass(this.outlinePass);
+    const addOutline = (color) =>
+    {
+      const pass = new THREE.OutlinePass(new THREE.Vector2(this.app.width, this.app.height), this.scene, this.camera);
+      pass.edgeStrength = 1;
+      pass.edgeThickness = 0.25;
+      pass.visibleEdgeColor.setHex(color);
+      pass.hiddenEdgeColor.setHex(color);
+      this.composer.addPass(pass);
+      return pass;
+    };
+
+    this.selectionPass = addOutline(0xFFFFFF); // White outline around selected things
+    this.poweredPass = addOutline(0x00FF00); // Green outline around powered things
+    this.overpoweredPass = addOutline(0xFF0000); // Red outline around overpowered things
 
     const copyPass = new THREE.ShaderPass(THREE.CopyShader);
     copyPass.renderToScreen = true;
@@ -405,12 +413,32 @@ class Game
 
     if (highlight)
     {
-      this.outlinePass.selectedObjects.push(model);
+      this.selectionPass.selectedObjects.push(model);
     }
     else
     {
-      this.outlinePass.selectedObjects.splice(this.outlinePass.selectedObjects.indexOf(model), 1);
+      this.selectionPass.selectedObjects.splice(this.selectionPass.selectedObjects.indexOf(model), 1);
     }
+  }
+
+  outlineThing(thing, powered)
+  {
+    if (!thing)
+      return;
+
+    if (powered)
+      this.poweredPass.selectedObjects.push(thing.model);
+    else
+      this.overpoweredPass.selectedObjects.push(thing.model);
+  }
+
+  clearOutline(thing)
+  {
+    if (!thing)
+      return;
+
+    this.poweredPass.selectedObjects.splice(this.poweredPass.selectedObjects.indexOf(thing.model), 1);
+    this.overpoweredPass.selectedObjects.splice(this.overpoweredPass.selectedObjects.indexOf(thing.model), 1);
   }
 
   eventToCameraPos(event)
