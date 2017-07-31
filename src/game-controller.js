@@ -227,12 +227,11 @@ class GameController {
 
   rebuildCoverage(night) {
     for (let [th,pos] of this.level.things.entries()) {
-      if (th instanceof Generator) {
-        this.game.updateCoverage(th, pos, night);
-      }
+      const visible = th === this.highlightedThing && th instanceof Generator;
+      this.game.updateCoverage(th, pos, visible, night);
     }
     if (this.heldThing) {
-      this.game.updateCoverage(this.heldThing, this.heldThingPos, false);
+      this.game.updateCoverage(this.heldThing, this.heldThingPos, true, false);
     }
   }
 

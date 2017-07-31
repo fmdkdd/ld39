@@ -253,12 +253,16 @@ class Game
     this.scene.add(root);
   }
 
-  updateCoverage(thing, gridPos, night)
+  updateCoverage(thing, gridPos, visible, night)
   {
     // Remove previous coverage
     const oldCoverage = thing.model.getObjectByName('coverage');
     if (oldCoverage)
       thing.model.remove(oldCoverage);
+
+    // Only recreate the coverage if it's currently visible
+    if (!visible)
+      return;
 
     const coverage = new THREE.Object3D();
     coverage.name = 'coverage';
