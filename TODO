@@ -10,9 +10,9 @@
 
 UNASSIGNED:
 - title screen?  (can use HTML on top of canvas)
-- end screen?    (can use HTML on top of canvas)
 - visual polish (transitions)
-- rotated solar panels are all black (minor, due to light direction)
+- rotated solar panels are all black at night (minor, due to light direction)
+- moon is in front of things in last level
 
 Can fix AFTER deadline (don't prioritize):
 (We can still fix bugs after the deadline, if they don't impact gameplay)
@@ -37,3 +37,4 @@ DONE:
 - background music
 - holding the mouse on a wind turbine stops it from rotating
 - rotating a thing resets all wind turbines motor rotation
+- end screen?    (can use HTML on top of canvas)
