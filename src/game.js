@@ -141,6 +141,28 @@ class Game
     this.nightLight.castShadow = true;
     this.scene.add(this.nightLight);
 
+    // Sprites
+
+    const sunTexture = new THREE.TextureLoader().load("data/sun.png");
+    sunTexture.magFilter = THREE.NearestFilter;
+    sunTexture.minFilter = THREE.LinearMipMapLinearFilter;
+
+    this.sun = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: sunTexture, color: 0xffffff, transparent: true }));
+    this.sun.scale.setScalar(0.75);
+    this.sun.position.set(-0.7, 0.1, -0.7);
+    this.sun.lookAt(this.camera.position)
+    this.scene.add(this.sun);
+
+    const moonTexture = new THREE.TextureLoader().load("data/moon.png");
+    moonTexture.magFilter = THREE.NearestFilter;
+    moonTexture.minFilter = THREE.LinearMipMapLinearFilter;
+
+    this.moon = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: moonTexture, color: 0xffffff, transparent: true }));
+    this.moon.scale.setScalar(0.75);
+    this.moon.position.set(0.4, 0.3, -0.7);
+    this.moon.lookAt(this.camera.position)
+    this.scene.add(this.moon);
+
     // Lighter shadows:
     // https://stackoverflow.com/questions/40938238/shadow-darkness-in-threejs-and-object-opacity
 

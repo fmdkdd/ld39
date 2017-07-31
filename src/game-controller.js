@@ -259,6 +259,9 @@ class GameController {
     this.game.dayLight.visible = true;
     this.game.nightLight.visible = false;
 
+    this.game.sun.visible = true;
+    this.game.moon.visible = false;
+
     // Type-specific rendering
     if (this.level) {
       for (let [thing,_] of this.level.things)
@@ -277,6 +280,9 @@ class GameController {
     this.game.nightLight.visible = true;
     this.game.ambientLight.visible = false;
     this.game.dayLight.visible = false;
+
+    this.game.sun.visible = false;
+    this.game.moon.visible = true;
 
     // Type-specific rendering
     if (this.level) {
