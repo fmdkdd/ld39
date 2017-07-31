@@ -193,8 +193,14 @@ class Game
     for (let [thing,_] of level.things) {
       this.scene.remove(thing.model);
     }
+
     this.terrain.forEach(t => this.scene.remove(t));
     this.scene.remove(this.dirt);
+
+    if (this.dustParticles) this.scene.remove(this.dustParticles.mesh);
+    if (this.smokeParticles) this.scene.remove(this.smokeParticles.mesh);
+    this.dustParticles = null;
+    this.smokeParticles = null;
   }
 
   loadLevel(level) {
