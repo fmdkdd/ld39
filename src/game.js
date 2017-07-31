@@ -361,7 +361,7 @@ class Game
 
     const particles = new SPE.Group({
       texture: {
-        value: THREE.ImageUtils.loadTexture(texturePath)
+        value: this.app.textures[texturePath]
       },
       blending: THREE.NormalBlending,
       maxParticleCount: 10000

@@ -73,6 +73,24 @@ window.addEventListener('DOMContentLoaded', function main() {
       this.sound.alias('putdown-scaled', 'putdown', .035, 1);
       this.sound.alias('rotate-scaled', 'rotate', .02, 1);
       this.loadSounds('happy-clouds');
+
+      this.textureLoader = new THREE.TextureLoader();
+      this.textures = {};
+      this.loadTexture('data/dust.png');
+      this.loadTexture('data/smoke.png');
+    },
+
+    loadTexture(path) {
+      this.textureLoader.load(
+        path,
+        texture => {
+          this.textures[path] = texture;
+        },
+        function(){},
+        function ( xhr ) {
+          console.log(`Error loading texture ${path}: ${xhr}`);
+	      }
+      );
     },
 
     ready() {
