@@ -47,7 +47,7 @@ const TILE_SIZE = 0.2;
 const THING_SCALE = 0.5;
 
 const TILE_COLOR_1 = 0x6daa2c;
-const TILE_COLOR_2 = 0x79a92b;
+const TILE_COLOR_2 = 0x88b73c;
 const TILE_COLOR_HOVER = new THREE.Color(0xffff00);
 const TILE_COLOR_HOVER_ALPHA = 0.7;
 const DAY_CLEARCOLOR = 0x6dc2ca;
@@ -226,13 +226,13 @@ class Game
     {
       model = new THREE.Object3D();
 
-      const positions = [[-TILE_SIZE * 0.25, -TILE_SIZE * 0.25], [TILE_SIZE * 0.25, TILE_SIZE * -0.05], [-TILE_SIZE * 0.15, TILE_SIZE * 0.25]];
+      const positions = [[-TILE_SIZE * 0.2, -TILE_SIZE * 0.2], [TILE_SIZE * 0.2, TILE_SIZE * -0.05], [-TILE_SIZE * 0.12, TILE_SIZE * 0.2]];
       for (let i = 0; i < thing.size; ++i)
       {
         const house = loadModel(THING_MODELS['Consumer']);
         house.position.set(positions[i][0], 0, positions[i][1]);
         house.rotation.y = Math.random() * 360;
-        house.scale.set(TILE_SIZE*0.1, TILE_SIZE*0.1,TILE_SIZE*0.1);
+        house.scale.multiplyScalar(TILE_SIZE*0.08);
         model.add(house);
       }
 
