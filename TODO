@@ -1,7 +1,7 @@
 @merwan:
-- fix models rotation (all models should face the same direction)
 - shadows are too strong (and too large?)
 - outline feedback on consumers (same effect)
+- make rock grey (looks interactable as is)
 
 @fmdkdd:
 - validate day and night separately (rules are different)
@@ -9,13 +9,13 @@
 - sound effects
 - background music
 
+- duplicate next level button in night levels (and too small, too high)
 
 unassigned:
 - adjust camera to see whole levels (maybe add camera data in level)
 - title screen?
 - visual polish (transitions)
 - visual feedback for POWERED battery (we forgot that!)
-- duplicate next level button in night levels (and too small, too high)
 - highlight is applied to particles (maybe removing the particles should fix it?)
 - particles stay between levels
 

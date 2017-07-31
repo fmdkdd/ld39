@@ -159,19 +159,6 @@ class Game
         thing.model.visible = false;
       }
     });
-
-    document.addEventListener('thing rotated', ev => {
-      let {thing} = ev.detail;
-
-      // Make sure to rotate the thing's model and not the root
-      thing.model.getObjectByName('model').rotation.y = thing.rotationAsRadian();
-
-      if (thing instanceof Generator)
-      {
-        const pos = this.app.state.gameController.level.getThingXY(thing); // sorry
-        this.updateCoverage(thing, pos);
-      }
-    });
   }
 
   showNextLevelButton() {

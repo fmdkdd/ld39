@@ -11,7 +11,31 @@ class GameController {
 
     document.addEventListener('level put thing', ev => this.validate());
     document.addEventListener('level removed thing', ev => this.validate());
-    document.addEventListener('thing rotated', ev => this.validate());
+    document.addEventListener('thing rotated', ev => {
+      this.validate();
+
+      let {thing} = ev.detail;
+
+      // Make sure to rotate the thing's model and not the root
+      thing.model.getObjectByName('model').rotation.y = thing.rotationAsRadian();
+
+      if (thing instanceof Generator)
+      {
+        let pos;
+        if (thing === this.heldThing) {
+          // Rotating in hand, use hoverTile coords, or the last tile that was
+          // picked (to handle rotating when outside of the board)
+          if (this.hoveredTile) {
+            pos = this.hoveredTile.coords;
+          } else if (this.lastPickedTile) {
+            pos = this.lastPickedTile.coords;
+          }
+        } else {
+          pos = this.level.getThingXY(thing);
+        }
+        this.game.updateCoverage(thing, pos);
+      }
+    });
 
     document.addEventListener('next level clicked', ev => this.nextLevel());
   }
@@ -136,6 +160,8 @@ class GameController {
     let tile = this.game.pickGridTile();
 
     if (tile) {
+      this.lastPickedTile = tile;
+
       // Restore the color of the previously hovered tile
       this.game.updateTileColor(this.hoveredTile, false);
 
@@ -193,6 +219,10 @@ class GameController {
     if (this.hoveredTile) {
       let [x,y] = this.hoveredTile.coords;
       this.rotateThingAt(x,y);
+    }
+
+    if (this.heldThing) {
+      this.heldThing.rotate();
     }
   }
 
