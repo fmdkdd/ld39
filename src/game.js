@@ -278,6 +278,7 @@ class Game
   {
     const worldPos = this.gridToWorld(gridPos[0], gridPos[1]);
     thing.model.position.set(worldPos[0], HELD_THING_VERTICAL_OFFSET, worldPos[1]);
+    this.updateCoverage(thing, gridPos);
   }
 
   putParticleCloud(x, y)
