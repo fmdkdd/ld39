@@ -249,7 +249,12 @@ class SolarPanel extends Generator {
     if (day) {
       this.model.traverse(c => {
         if (c.material && c.material.emissive)
-          c.material.emissive.setScalar(Math.abs(Math.sin(this.t * 1)) * 0.25);
+          c.material.emissive.setScalar(Math.abs(Math.sin(this.t * .4)) * 0.2);
+      });
+    } else {
+      this.model.traverse(c => {
+        if (c.material && c.material.emissive)
+          c.material.emissive.setHex(0);
       });
     }
   }
