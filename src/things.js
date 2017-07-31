@@ -119,6 +119,9 @@ class WindTurbine extends Generator {
 
   constructor() {
     super(`windturbine-${Thing.ID++}`);
+
+    // keep count of time for animating the blades
+    this.t = 0;
   }
 
   // Return a list of all the cells that may be powered by this generator
@@ -133,9 +136,6 @@ class WindTurbine extends Generator {
     // Discard the first cell, since it's where the turbine stands and does not
     // emit power
     cells.shift();
-
-    // keep count of time for animating the blades
-    this.t = 0;
 
     return cells;
   }
