@@ -14,7 +14,10 @@ body {
 
 #container {
   position: relative;
-  margin: 20px auto;
+  margin: 20px auto 40px auto;
+  width: 960px;
+  height: 540px;
+  background-color: #6dc2ca;
 }
 
 #title {
@@ -134,6 +137,10 @@ body {
   padding: 0 10px;
 }
 
+h2 {
+  margin-top: 60px;
+}
+
 a {
   color: #ff8f8f;
 }
@@ -141,10 +148,11 @@ a {
 footer {
   text-align: right;
   margin-top: 50px;
+  clear: right;
 }
 
 #nag {
-  font-size: 28px;
+  font-size: 16px;
   color: #fff;
   float: right;
 }
@@ -156,4 +164,8 @@ footer {
   clear: right;
   margin-top: 40px;
   width: 200px;
+  box-sizing: border-box;
+  background-color: #333;
+  padding: 10px;
+  border-radius: 10px;
 }
