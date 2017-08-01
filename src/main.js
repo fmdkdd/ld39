@@ -76,9 +76,11 @@ window.addEventListener('DOMContentLoaded', function main() {
       this.loadSounds('pickup');
       this.loadSounds('putdown');
       this.loadSounds('rotate');
+      this.loadSounds('level-solved');
       this.sound.alias('pickup-scaled', 'pickup', .03, 1);
       this.sound.alias('putdown-scaled', 'putdown', .035, 1);
       this.sound.alias('rotate-scaled', 'rotate', .02, 1);
+      this.sound.alias('level-solved-scaled', 'level-solved', .45, 1);
       this.loadSounds('happy-clouds');
 
       this.textureLoader = new THREE.TextureLoader();
@@ -129,6 +131,6 @@ window.addEventListener('DOMContentLoaded', function main() {
     },
 
     // Record FPS through the prerender and postrender events
-    postrender() { this.stats.update(); }
+    // postrender() { this.stats.update(); }
   })
 })

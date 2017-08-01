@@ -77,7 +77,7 @@ class GameController {
       this.heldThing = null;
       this.newLevelMovingIn = this.game.loadLevel(this.level);
       this.game.hideNextLevelButton();
-      this.validate();
+      this.levelSolvedSoundPlayed = false;
 
       if (this.currentLevel > 0) {
         this.game.showPreviousLevelButton();
@@ -168,6 +168,11 @@ class GameController {
       if (this.validationResult.solved) {
         // Save level progression
         this.setMaxLevelSolved(this.currentLevel);
+
+        if (!this.levelSolvedSoundPlayed) {
+          this.app.playSound('level-solved-scaled');
+          this.levelSolvedSoundPlayed = true;
+        }
       }
 
       if (this.validationResult.solved || this.currentLevel <= this.getMaxLevelSolved()) {
