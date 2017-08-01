@@ -142,3 +142,9 @@ footer {
   text-align: right;
   margin-top: 50px;
 }
+
+#nag {
+  font-size: 28px;
+  color: #fff;
+  float: right;
+}
