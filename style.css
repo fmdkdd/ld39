@@ -148,3 +148,12 @@ footer {
   color: #fff;
   float: right;
 }
+
+#glitch {
+  font-size: 14px;
+  color: #ccc;
+  float: right;
+  clear: right;
+  margin-top: 40px;
+  width: 200px;
+}

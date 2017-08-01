@@ -64,6 +64,10 @@ window.addEventListener('DOMContentLoaded', function main() {
       // this.stats.dom.style.right = 0;
       // this.stats.dom.style.bottom = 0;
       // document.body.appendChild(this.stats.dom);
+
+      document.getElementById('remove-particles').addEventListener('click', function(){
+        window.localStorage.setItem('noParticles', true);
+      });
     },
 
     create() {
