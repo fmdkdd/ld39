@@ -158,9 +158,9 @@ class Game
     this.sun.scale.setScalar(0.75);
     this.sun.position.set(-0.7, 0.1, -0.7);
     this.sun.lookAt(this.camera.position)
-    this.scene.add(this.sun);
+    this.scene.add(this.sun);*/
 
-    const moonTexture = new THREE.TextureLoader().load("data/moon.png");
+    /*const moonTexture = new THREE.TextureLoader().load("data/moon.png");
     moonTexture.magFilter = THREE.NearestFilter;
     moonTexture.minFilter = THREE.LinearMipMapLinearFilter;
 
@@ -169,6 +169,17 @@ class Game
     this.moon.position.set(0.4, 0.3, -0.7);
     this.moon.lookAt(this.camera.position)
     this.scene.add(this.moon);*/
+
+    const starsTexture = new THREE.TextureLoader().load("data/stars.png");
+    //const starsTexture = this.app.textures['data/stars.png']; // Not ready yet?
+    starsTexture.magFilter = THREE.NearestFilter;
+    starsTexture.minFilter = THREE.LinearMipMapLinearFilter;
+
+    this.stars = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: starsTexture, color: 0xffffff, transparent: true }));
+    this.stars.scale.setScalar(2);
+    this.stars.position.set(-0.5, -2, -2);
+    this.stars.lookAt(this.camera.position)
+    this.scene.add(this.stars);
 
     // Lighter shadows:
     // https://stackoverflow.com/questions/40938238/shadow-darkness-in-threejs-and-object-opacity

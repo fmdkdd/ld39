@@ -377,6 +377,7 @@ class GameController {
 
     //this.game.sun.visible = true;
     //this.game.moon.visible = false;
+    this.game.stars.visible = false;
 
     // Type-specific rendering
     if (this.level) {
@@ -399,6 +400,7 @@ class GameController {
 
     //this.game.sun.visible = false;
     //this.game.moon.visible = true;
+    this.game.stars.visible = true;
 
     // Type-specific rendering
     if (this.level) {

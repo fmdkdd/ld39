@@ -87,6 +87,7 @@ window.addEventListener('DOMContentLoaded', function main() {
       this.textures = {};
       this.loadTexture('data/dust.png');
       this.loadTexture('data/smoke.png');
+      this.loadTexture('data/stars.png');
     },
 
     loadTexture(path) {
