@@ -109,6 +109,7 @@ class GameController {
 
         // Delete the old scene
         this.game.scene.remove(this.oldLevelMovingOut);
+        this.game.dispose(this.oldLevelMovingOut);
         this.oldLevelMovingOut = null;
 
         // load the new scene and animate it in

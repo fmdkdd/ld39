@@ -367,12 +367,43 @@ class Game
     this.sceneRoot.add(root);
   }
 
+  // Recursively dispose of the geometry and material of a model and of its
+  // children.  To use when we don't want to show this model anymore, because
+  // THREE doesn't do that automatically when we remove the object from a scene.
+  dispose(model) {
+    if (model != null)
+    {
+      for (let c of model.children) {
+        this.dispose(c);
+      }
+      if (model.geometry) {
+        model.geometry.dispose();
+        model.geometry = undefined;
+      }
+      if (model.material) {
+        if (model.material.map) {
+          model.material.map.dispose();
+          model.material.map = undefined;
+        }
+        model.material.dispose();
+        model.material = undefined;
+      }
+    }
+  }
+
+  // FIXME: this function is called at 120Hz, which is quite wasteful.  A better
+  // solution would be to rebuild the coverage each time the object is
+  // moved/rotated, and keep the day and night versions in parallel, then only
+  // show one or the other when rendering the scene.  (We can't build the
+  // coverages only once for the thing, since the battery coverage is dynamic).
   updateCoverage(thing, gridPos, visible, night)
   {
     // Remove previous coverage
     const oldCoverage = thing.model.getObjectByName('coverage');
-    if (oldCoverage)
+    if (oldCoverage) {
       thing.model.remove(oldCoverage);
+      this.dispose(oldCoverage);
+    }
 
     // Only recreate the coverage if it's currently visible
     if (!visible)
