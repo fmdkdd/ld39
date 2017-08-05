@@ -267,8 +267,14 @@ class Game
     this.scene.remove(this.dirt);
     oldContent.add(this.dirt);
 
-    if (this.dustParticles) this.scene.remove(this.dustParticles.mesh);
-    if (this.smokeParticles) this.scene.remove(this.smokeParticles.mesh);
+    if (this.dustParticles) {
+      this.scene.remove(this.dustParticles.mesh);
+      this.dispose(this.dustParticles.mesh);
+    }
+    if (this.smokeParticles) {
+      this.scene.remove(this.smokeParticles.mesh);
+      this.dispose(this.smokeParticles.mesh);
+    }
     this.dustParticles = null;
     this.smokeParticles = null;
 
@@ -373,8 +379,10 @@ class Game
   dispose(model) {
     if (model != null)
     {
-      for (let c of model.children) {
-        this.dispose(c);
+      if (model.children) {
+        for (let c of model.children) {
+          this.dispose(c);
+        }
       }
       if (model.geometry) {
         model.geometry.dispose();
@@ -503,10 +511,10 @@ class Game
 
     // Program the removal of the emitter
     // XXX: sometimes make the particle engine crash
-    setTimeout(() => {
+    // setTimeout(() => {
       //emitter.disable();
       //this.dustParticles.removeEmitter(emitter);
-    }, 10000);
+    // }, 10000);
   }
 
   // Show smoke particles to represent overpowered consumers
