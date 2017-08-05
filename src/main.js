@@ -16,8 +16,8 @@ STATES.Main = {
   pointermove(event) {
 
     // Update position relative to the canvas
-    this.pointer.x = event.original.clientX - this.app.container.offsetLeft;
-    this.pointer.y = event.original.clientY - this.app.container.offsetTop;
+    this.pointer.x = window.pageXOffset + event.original.clientX - this.app.container.offsetLeft;
+    this.pointer.y = window.pageYOffset + event.original.clientY - this.app.container.offsetTop;
 
     this.gameController.pointermove(this.pointer);
   },
