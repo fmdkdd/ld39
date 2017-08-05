@@ -2,17 +2,23 @@
 - shadows are too strong (and too large?)
 
 @fmdkdd:
-- level sound
--
+
 
 UNASSIGNED:
 - rotated solar panels are all black at night (minor, due to light direction)
-- moon is in front of things in last level
 
 Can fix AFTER deadline (don't prioritize):
 (We can still fix bugs after the deadline, if they don't impact gameplay)
-- looks like we have a large memory leak
-- weird particles bug that may be driver-specific
+- weird particles bug that may be driver-specific (particles.mesh is displayed in the outline pass)
+
+
+Post-rating features:
+- add level name/number
+- unify highlighting/tile hovering so that clicking on an object or
+  its tile picks it up, and mouse hovering on the tile shows the coverage
+- level transition sound
+- make controls mobile-friendly
+- make the solar panel animation pop more (almost blinking, but with a large cooldown)
 
 
 DONE:
@@ -37,3 +43,4 @@ DONE:
 - add explanations below the game
 - title screen?  (can use HTML on top of canvas)
 - visual polish (transitions)
+- level complete sound
