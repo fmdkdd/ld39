@@ -99,6 +99,14 @@ class GameController {
     // Transition between levels
     if (this.level) {
 
+      // Remove the held thing, if any
+      if (this.heldThing) {
+        this.game.sceneRoot.remove(this.heldThing.model);
+        this.game.dispose(this.heldThing.model);
+        this.heldThing.model = null;
+        this.heldThing = null;
+      }
+
       // Unload the level and group everything in a node that
       // will be animated out of the screen
       this.oldLevelMovingOut = this.game.unloadLevel(this.level);
